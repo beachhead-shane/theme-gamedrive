@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": false,
+    "outDir": "../public/scripts",
+    "moduleResolution": "node",
+    "module": "ES2020",
+    "target": "ES2020",
+    "experimentalDecorators": true,
+    "checkJs": true,
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "src/service-worker", "public"],
+  "types": ["lit", "mocha"]
+}

@@ -1,0 +1,24 @@
+{
+  "short_name": "Template",
+  "name": "Template",
+  "icons": [
+    {
+      "src": "/images/manifest/lit-pwa.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/manifest/lit-pwa-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "/?source=webibm",
+  "start_url": "/?source=webibm",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#FFFFFF"
+}

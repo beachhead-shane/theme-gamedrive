@@ -1,0 +1,36 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: run-eslint
+        description: "run estlint and fix"
+        entry: ./01-web-demo/hooks/eslint.sh
+        language: script
+        pass_filenames: false
+      - id: tsc
+        name: run-tsc
+        description: "run tsc"
+        entry: ./01-web-demo/hooks/tsc.sh
+        language: script
+        pass_filenames: false
+      - id: unit-tests
+        name: run-unit-tests
+        description: "run unit tests"
+        entry: ./01-web-demo/hooks/unit-tests.sh
+        language: script
+        pass_filenames: false

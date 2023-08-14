@@ -1,0 +1,163 @@
+{
+  "name": "webibm",
+  "version": "1.0.0",
+  "description": "A fully working simple PWA",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "wireit",
+    "build": "wireit",
+    "build-sourcemap": "wireit",
+    "serve": "wireit",
+    "test": "wtr",
+    "test:debug": "npm run test -- --watch"
+  },
+  "keywords": [
+    "es6",
+    "pwa"
+  ],
+  "author": "",
+  "license": "MIT",
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2020": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:lit/recommended"
+    ],
+    "ignorePatterns": [
+      "/public/*"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "lit"
+    ],
+    "rules": {
+      "lit/no-legacy-template-syntax": "error",
+      "lit/no-template-arrow": "warn",
+      "@typescript-eslint/no-inferrable-types": "off"
+    }
+  },
+  "dependencies": {
+    "@lit-labs/context": "^0.3.3",
+    "@reduxjs/toolkit": "^1.9.5",
+    "lil-gui": "^0.18.1",
+    "lit": "^2.7.5"
+  },
+  "overrides": {
+    "@types/css-font-loading-module": "0.0.8"
+  },
+  "devDependencies": {
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@open-wc/testing": "^3.1.8",
+    "@types/howler": "^2.2.7",
+    "@types/mocha": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "@web/dev-server-esbuild": "^0.3.6",
+    "@web/test-runner": "^0.15.3",
+    "@web/test-runner-core": "^0.10.29",
+    "@web/test-runner-playwright": "^0.9.0",
+    "esbuild": "^0.17.17",
+    "eslint": "^8.38.0",
+    "eslint-plugin-lit": "^1.8.2",
+    "typescript": "^5.0.4",
+    "wireit": "0.9.5"
+  },
+  "wireit": {
+    "buildDevSw": {
+      "command": "node build/buildSw.js -dev",
+      "clean": true,
+      "output": [
+        "public/scripts/service-worker.js",
+        "public/scripts/service-worker.js.map"
+      ],
+      "files": [
+        "src/service-worker/**/*.ts"
+      ],
+      "dependencies": [
+        "buildDev"
+      ]
+    },
+    "buildProdSw": {
+      "command": "node build/buildSw.js",
+      "clean": true,
+      "output": [
+        "public/scripts/service-worker.js",
+        "public/scripts/service-worker.js.map"
+      ],
+      "files": [
+        "build/buildSw.js",
+        "src/service-worker/**/*.ts"
+      ],
+      "dependencies": [
+        "build"
+      ]
+    },
+    "buildDev": {
+      "command": "node build/buildApp.js -dev -sourcemap",
+      "clean": true,
+      "files": [
+        "src/**/*.ts",
+        "!src/service-worker/**/*"
+      ],
+      "output": [
+        "public/scripts/**/*.js"
+      ]
+    },
+    "build": {
+      "command": "node build/buildApp.js",
+      "clean": true,
+      "files": [
+        "src/**/*.ts",
+        "!src/service-worker/**/*"
+      ],
+      "output": [
+        "public/scripts/**/*.js"
+      ]
+    },
+    "build-sourcemap": {
+      "command": "node build/buildApp.js -sourcemap",
+      "clean": true,
+      "files": [
+        "src/**/*.ts",
+        "!src/service-worker/**/*"
+      ],
+      "output": [
+        "public/scripts/**/*.js"
+      ]
+    },
+    "start": {
+      "command": "node build/buildApp.js -dev -serve -sourcemap",
+      "clean": true,
+      "files": [
+        "src/**/*.ts",
+        "!src/service-worker/**/*"
+      ],
+      "dependencies": [
+        "buildDevSw"
+      ],
+      "service": true
+    },
+    "serve": {
+      "command": "node build/buildApp.js -serve -sourcemap",
+      "clean": true,
+      "files": [
+        "src/**/*.ts",
+        "!src/service-worker/**/*"
+      ],
+      "dependencies": [
+        "buildProdSw"
+      ],
+      "service": true
+    }
+  }
+}
