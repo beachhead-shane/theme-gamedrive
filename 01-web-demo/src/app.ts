@@ -1,6 +1,7 @@
 import { css, html, LitElement, PropertyValueMap } from "lit";
 import "./components/game-board";
 import "./components/cell";
+import "./components/bottom-bar";
 import { store } from "./state";
 import { getIconFromCell, IGameCell, loadItems, loadMap } from "./gameReducer";
 import { state } from "lit/decorators.js";
@@ -20,6 +21,12 @@ class App extends LitElement {
   @state()
   gameData: Array<IGameCell> = [];
 
+  @state()
+  time: number;
+
+  @state()
+  playTimer: number = 0;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -29,6 +36,7 @@ class App extends LitElement {
 
   onStateUpdate() {
     this.gameData = store.getState().game.cells;
+    this.time = store.getState().game.time;
     console.log("on state update", this.gameData);
   }
 
@@ -69,18 +77,21 @@ class App extends LitElement {
   }
 
   render() {
-    return html` <game-board>
-      ${this.gameData.map(
-        (cell) => html`
-          <game-cell
-            x=${cell.x}
-            y=${cell.y}
-            tileType=${cell.tileType}
-            iconSrc=${getIconFromCell(cell)}
-          ></game-cell>
-        `
-      )}
-    </game-board>`;
+    return html`
+      <game-board>
+        ${this.gameData.map(
+          (cell) => html`
+            <game-cell
+              x=${cell.x}
+              y=${cell.y}
+              tileType=${cell.tileType}
+              iconSrc=${getIconFromCell(cell)}
+            ></game-cell>
+          `
+        )}
+      </game-board>
+      <bottom-bar time=${this.time}></bottom-bar>
+    `;
   }
 }
 
