@@ -26,7 +26,16 @@ export enum Class {
   Human,
   Object,
 }
+export enum Action {
+  LookOut,
+  HeadHome,
+  Track,
+}
 
+export interface IAction {
+  friendlyName: string;
+  action: Action;
+}
 export interface Item {
   itemType: ItemType;
   isVisible: boolean;
@@ -34,6 +43,8 @@ export interface Item {
   order: Order;
   sleepingMode: SleepingMode;
   age: number;
+  actions?: Array<IAction>;
+  activeAction?: Action;
 }
 
 interface IDefaultItems {
@@ -79,6 +90,21 @@ export const defaultItems: IDefaultItems = {
     class: Class.Human,
     order: Order.Prey,
     age: 0,
+    activeAction: Action.LookOut,
+    actions: [
+      {
+        friendlyName: "Keep Look Out",
+        action: Action.LookOut,
+      },
+      {
+        friendlyName: "Head Home",
+        action: Action.HeadHome,
+      },
+      {
+        friendlyName: "Track Animals",
+        action: Action.Track,
+      },
+    ],
   },
   Truck: {
     itemType: ItemType.Truck,

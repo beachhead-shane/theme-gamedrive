@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { store } from "./state";
-import { ItemType, defaultItems } from "./Types/Items/Item";
+import { Action, ItemType, defaultItems } from "./Types/Items/Item";
 import { TileType } from "./Types/TileType";
 import { IGameCell } from "./Types/IGameCell";
 import { BehaviourManager } from "./components/Behaviours/BehaviourManager";
@@ -13,12 +13,13 @@ import { revealAnimalBehaviour } from "./components/Behaviours/reveal-animal-beh
 import { followTrackBehaviour } from "./components/Behaviours/follow-track-behavior";
 import { ageBehaviour } from "./components/Behaviours/age-behaviour";
 import { destroyAtAgeBehaviour } from "./components/Behaviours/destroy-at-age-behavior";
+import { headHomeBehaviour } from "./components/Behaviours/head-home-behaviour";
 
 export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
   timerId: number;
-  selectedCell?: IGameCell;
+  selectedCell?: { x: number; y: number };
 }
 
 const behaviors = {
@@ -60,14 +61,31 @@ const behaviors = {
     return behaviourManager.run(item, board, timeOfDay);
   },
   Tracker: (tracker: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
-    const behaviourManager: BehaviourManager = new BehaviourManager([
-      ageBehaviour,
-      revealAnimalBehaviour,
-      trackSleepingPredatorBehaviour,
-      followTrackBehaviour,
-      fleeBehaviour,
-    ]);
-    return behaviourManager.run(tracker, board, timeOfDay);
+    if (tracker.item.activeAction === Action.Track) {
+      const behaviourManager: BehaviourManager = new BehaviourManager([
+        ageBehaviour,
+        revealAnimalBehaviour,
+        trackSleepingPredatorBehaviour,
+        followTrackBehaviour,
+        fleeBehaviour,
+      ]);
+      return behaviourManager.run(tracker, board, timeOfDay);
+    }
+
+    if (tracker.item.activeAction === Action.LookOut) {
+      const behaviourManager: BehaviourManager = new BehaviourManager([
+        fleeBehaviour,
+      ]);
+      return behaviourManager.run(tracker, board, timeOfDay);
+    }
+
+    if (tracker.item.activeAction === Action.HeadHome) {
+      const behaviourManager: BehaviourManager = new BehaviourManager([
+        fleeBehaviour,
+        headHomeBehaviour,
+      ]);
+      return behaviourManager.run(tracker, board, timeOfDay);
+    }
   },
   Truck: (item: IGameCell, board: Array<IGameCell>) => {
     return board;
@@ -106,6 +124,7 @@ const slice = createSlice({
       }
     },
     processBoard(state) {
+      state.selectedCell = undefined;
       const items = state.cells.filter((x) => {
         if (x.item.itemType !== ItemType.None) {
           return x;
@@ -120,14 +139,22 @@ const slice = createSlice({
         state.time = 0;
       }
     },
+    setAction(
+      state,
+      action: PayloadAction<{ cell: IGameCell; action: Action }>
+    ) {
+      console.log(action);
+      const index = state.cells.findIndex(
+        (x) => x.x == action.payload.cell.x && x.y === action.payload.cell.y
+      );
+      state.cells[index].item.activeAction = action.payload.action;
+    },
     selectCell(state, action: PayloadAction<{ x: number; y: number }>) {
       if (state.timerId !== 0) {
         clearInterval(state.timerId);
         state.timerId = 0;
       }
-      state.selectedCell = state.cells.find(
-        (x) => x.x == action.payload.x && x.y === action.payload.y
-      );
+      state.selectedCell = action.payload;
     },
 
     loadMap(state, action: PayloadAction<Array<number>>) {
@@ -195,6 +222,12 @@ const slice = createSlice({
   },
 });
 
-export const { loadMap, loadItems, processBoard, togglePlay, selectCell } =
-  slice.actions;
+export const {
+  loadMap,
+  loadItems,
+  processBoard,
+  togglePlay,
+  selectCell,
+  setAction,
+} = slice.actions;
 export default slice.reducer;
