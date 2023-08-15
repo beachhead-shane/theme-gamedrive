@@ -2,8 +2,10 @@ import { css, html, LitElement, PropertyValueMap } from "lit";
 import "./components/game-board";
 import "./components/cell";
 import "./components/bottom-bar";
+import "./components/side-bar";
 import { store } from "./state";
-import { getIconFromCell, IGameCell, loadItems, loadMap } from "./gameReducer";
+import { loadItems, loadMap } from "./gameReducer";
+import { getIconFromCell, IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
 import { Unsubscribe } from "@reduxjs/toolkit";
 class App extends LitElement {
@@ -15,6 +17,9 @@ class App extends LitElement {
       display: block;
       width: 100%;
       height: 100%;
+    }
+    .outer-container {
+      display: flex;
     }
   `;
 
@@ -78,18 +83,22 @@ class App extends LitElement {
 
   render() {
     return html`
-      <game-board>
-        ${this.gameData.map(
-          (cell) => html`
-            <game-cell
-              x=${cell.x}
-              y=${cell.y}
-              tileType=${cell.tileType}
-              iconSrc=${getIconFromCell(cell)}
-            ></game-cell>
-          `
-        )}
-      </game-board>
+      <div class="outer-container">
+        <side-bar></side-bar>
+        <game-board>
+          ${this.gameData.map(
+            (cell) => html`
+              <game-cell
+                x=${cell.x}
+                y=${cell.y}
+                tileType=${cell.tileType}
+                iconSrc=${getIconFromCell(cell)}
+                ?itemVisible="${cell.item.isVisible}"
+              ></game-cell>
+            `
+          )}
+        </game-board>
+      </div>
       <bottom-bar time=${this.time}></bottom-bar>
     `;
   }

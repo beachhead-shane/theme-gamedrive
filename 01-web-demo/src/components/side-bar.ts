@@ -1,21 +1,20 @@
-import { css, html, LitElement, nothing } from "lit";
+import { css, html, LitElement } from "lit";
 import { state } from "lit/decorators.js";
 import { store } from "../state";
 import { processBoard, togglePlay } from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
-class BottomBar extends LitElement {
+class SideBar extends LitElement {
   constructor() {
     super();
   }
 
   static styles = css`
     .container {
-      margin-top: 10px;
-      width: 715px;
-      height: 50px;
+      width: 200px;
+      height: 525px;
       background-color: #ccc;
       border-radius: 10px;
-      padding: 10px;
+      margin-right: 10px;
       text-align: center;
     }
     .time {
@@ -47,21 +46,9 @@ class BottomBar extends LitElement {
     store.dispatch(togglePlay());
   }
   render() {
-    return html`<div class="container">
-      <div class="time">
-        Time Of Day ${this.time.toString().padStart(2, "0")}:00
-        ${this.timerId === 0 ? "(paused)" : ""}
-      </div>
-      <button @click="${this.play}">
-        ${this.timerId === 0 ? `play` : `pause`}
-      </button>
-
-      ${this.timerId === 0
-        ? html`<button @click="${this.advance}">advance one hour</button>`
-        : nothing}
-    </div>`;
+    return html`<div class="container"></div>`;
   }
 }
 
 // define custom element
-customElements.define("bottom-bar", BottomBar);
+customElements.define("side-bar", SideBar);

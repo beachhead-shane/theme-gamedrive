@@ -1,5 +1,9 @@
 import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { store } from "../state";
+import { selectCell } from "../gameReducer";
+import { Unsubscribe } from "@reduxjs/toolkit";
+import { ItemType } from "../Types/Items/Item";
 class Cell extends LitElement {
   constructor() {
     super();
@@ -15,6 +19,26 @@ class Cell extends LitElement {
 
   @property({ type: Number })
   y: number;
+
+  @property({ type: Boolean })
+  itemVisible: boolean;
+
+  @state()
+  isSelected: boolean;
+
+  unsubscribe: Unsubscribe;
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.unsubscribe = store.subscribe(this.onStateUpdate.bind(this));
+    this.onStateUpdate();
+  }
+
+  onStateUpdate() {
+    const selectedCell = store.getState().game.selectedCell;
+    if (selectedCell) {
+      this.isSelected = selectedCell.x === this.x && selectedCell.y === this.y;
+    }
+  }
 
   static styles = css`
     * {
@@ -38,6 +62,10 @@ class Cell extends LitElement {
       background-size: auto;
       background-position: center;
     }
+    .selected {
+      border: 5px solid black;
+      box-sizing: border-box;
+    }
     .grass {
       background-color: #22aa33;
     }
@@ -50,11 +78,22 @@ class Cell extends LitElement {
     }
   `;
 
+  onCellClick() {
+    if (
+      store.getState().game.cells.find((c) => c.x === this.x && c.y === this.y)
+        .item.itemType != ItemType.None
+    ) {
+      store.dispatch(selectCell({ x: this.x, y: this.y }));
+    }
+  }
   render() {
     return html`<div
-      class="cell ${this.tileType}"
+      class="cell ${this.tileType} ${this.isSelected ? "selected" : ""}"
       id="game-cell-${this.x}-${this.y}"
-      style="background-image:url('icons/${this.iconSrc}')"
+      style="${this.itemVisible
+        ? `background-image:url('icons/${this.iconSrc}'`
+        : ""})"
+      @click="${this.onCellClick}"
     >
       ${this.x}-${this.y}
     </div>`;

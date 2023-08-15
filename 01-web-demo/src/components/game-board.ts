@@ -18,6 +18,7 @@ class GameBoard extends LitElement {
       margin: 0;
       gap: 0;
       border: solid;
+      border-radius: 10px;
       padding: 10px;
     }
   `;
