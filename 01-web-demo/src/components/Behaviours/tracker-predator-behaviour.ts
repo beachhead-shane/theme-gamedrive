@@ -54,7 +54,7 @@ export const trackSleepingPredatorBehaviour: Behaviour = (
     if (trackerIndex !== -1 && newTrackerPositionIndex !== -1) {
       board[newTrackerPositionIndex].item = { ...board[trackerIndex].item };
       board[newTrackerPositionIndex].item.stats.fatigue += 1;
-      board[trackerIndex].item = defaultItems[ItemType.None];
+      board[trackerIndex].item = defaultItems()[ItemType.None];
     }
     return { stop: true, board };
   }

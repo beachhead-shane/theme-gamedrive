@@ -13,7 +13,7 @@ export const destroyAtAgeBehaviour = (
       (cell) => cell.x === item.x && cell.y === item.y
     );
 
-    board[itemIndex].item = defaultItems[ItemType.None];
+    board[itemIndex].item = defaultItems()[ItemType.None];
   }
   return { stop: false, board };
 };

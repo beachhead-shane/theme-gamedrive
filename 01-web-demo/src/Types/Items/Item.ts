@@ -54,6 +54,7 @@ interface IStats {
   morale?: number;
 }
 export interface Item {
+  uid: string;
   itemType: ItemType;
   isVisible: boolean;
   class: Class;
@@ -68,98 +69,107 @@ export interface Item {
 interface IDefaultItems {
   [key: string]: Item;
 }
-export const defaultItems: IDefaultItems = {
-  None: {
-    itemType: ItemType.None,
-    isVisible: false,
-    sleepingMode: SleepingMode.None,
-    class: Class.None,
-    order: Order.None,
-    age: 0,
-    stats: {},
-  },
-  Lion: {
-    itemType: ItemType.Lion,
-    isVisible: false,
-    sleepingMode: SleepingMode.Nocturnal,
-    class: Class.Animal,
-    order: Order.Predator,
-    age: 0,
-    stats: {
-      fatigue: 0,
+export const defaultItems: () => IDefaultItems = () => {
+  return {
+    None: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.None,
+      isVisible: false,
+      sleepingMode: SleepingMode.None,
+      class: Class.None,
+      order: Order.None,
+      age: 0,
+      stats: {},
     },
-  },
-  Kudu: {
-    itemType: ItemType.Kudu,
-    isVisible: true,
-    sleepingMode: SleepingMode.Diurnal,
-    class: Class.Animal,
-    order: Order.Prey,
-    age: 0,
-    stats: {
-      fatigue: 0,
-    },
-  },
-  Lodge: {
-    itemType: ItemType.Lodge,
-    isVisible: true,
-    sleepingMode: SleepingMode.None,
-    class: Class.Object,
-    order: Order.None,
-    age: 0,
-    stats: {},
-    actions: [
-      {
-        friendlyName: "Deploy Tracker",
-        momentary: true,
-        action: Action.DeployTrackerFromLodge,
+    Lion: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.Lion,
+      isVisible: false,
+      sleepingMode: SleepingMode.Nocturnal,
+      class: Class.Animal,
+      order: Order.Predator,
+      age: 0,
+      stats: {
+        fatigue: 0,
       },
-    ],
-  },
-  Tracker: {
-    itemType: ItemType.Tracker,
-    isVisible: true,
-    sleepingMode: SleepingMode.Diurnal,
-    class: Class.Human,
-    order: Order.Prey,
-    age: 0,
-    activeAction: Action.LookOut,
-    stats: {
-      fatigue: 0,
-      morale: 5,
     },
+    Kudu: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.Kudu,
+      isVisible: true,
+      sleepingMode: SleepingMode.Diurnal,
+      class: Class.Animal,
+      order: Order.Prey,
+      age: 0,
+      stats: {
+        fatigue: 0,
+      },
+    },
+    Lodge: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.Lodge,
+      isVisible: true,
+      sleepingMode: SleepingMode.None,
+      class: Class.Object,
+      order: Order.None,
+      age: 0,
+      stats: {},
+      actions: [
+        {
+          friendlyName: "Deploy Tracker",
+          momentary: true,
+          action: Action.DeployTrackerFromLodge,
+        },
+      ],
+    },
+    Tracker: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.Tracker,
+      isVisible: true,
+      sleepingMode: SleepingMode.Diurnal,
+      class: Class.Human,
+      order: Order.Prey,
+      age: 0,
+      activeAction: Action.LookOut,
+      stats: {
+        fatigue: 0,
+        morale: 5,
+      },
 
-    actions: [
-      {
-        friendlyName: "Keep Look Out",
-        action: Action.LookOut,
-      },
-      {
-        friendlyName: "Head Home",
-        action: Action.HeadHome,
-      },
-      {
-        friendlyName: "Track Animals",
-        action: Action.Track,
-      },
-    ],
-  },
-  Truck: {
-    itemType: ItemType.Truck,
-    isVisible: true,
-    sleepingMode: SleepingMode.None,
-    class: Class.Object,
-    order: Order.None,
-    age: 0,
-    stats: {},
-  },
-  AnimalTrack: {
-    itemType: ItemType.AnimalTrack,
-    isVisible: true,
-    sleepingMode: SleepingMode.None,
-    class: Class.Object,
-    order: Order.None,
-    age: 0,
-    stats: {},
-  },
+      actions: [
+        {
+          friendlyName: "Keep Look Out",
+          action: Action.LookOut,
+        },
+        {
+          friendlyName: "Head Home",
+          action: Action.HeadHome,
+        },
+        {
+          friendlyName: "Track Animals",
+          action: Action.Track,
+        },
+      ],
+    },
+    Truck: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.Truck,
+      isVisible: true,
+      sleepingMode: SleepingMode.None,
+      class: Class.Object,
+      order: Order.None,
+      age: 0,
+      stats: {},
+    },
+    AnimalTrack: {
+      uid: crypto.randomUUID(),
+      itemType: ItemType.AnimalTrack,
+      isVisible: true,
+      sleepingMode: SleepingMode.None,
+      class: Class.Object,
+      order: Order.None,
+      age: 0,
+      stats: {},
+    },
+  };
 };

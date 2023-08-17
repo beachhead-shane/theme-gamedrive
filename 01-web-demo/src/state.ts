@@ -9,13 +9,22 @@ const listenerMiddleware = createListenerMiddleware();
 listenerMiddleware.startListening({
   actionCreator: processBoard,
   effect: (action, listenerApi) => {
-    console.log("running middleware", action);
     listenerApi.cancelActiveListeners();
     if (store.getState().tutorial.tutorialIndex < tutorialSteps.length) {
       if (tutorialSteps[store.getState().tutorial.tutorialIndex]()) {
         store.dispatch(advanceTutorial());
       }
     }
+  },
+});
+
+const boardSaver = createListenerMiddleware();
+boardSaver.startListening({
+  actionCreator: processBoard,
+  effect: (action, listenerApi) => {
+    listenerApi.cancelActiveListeners();
+
+    localStorage.setItem("board_state", JSON.stringify(store.getState()));
   },
 });
 
@@ -26,5 +35,7 @@ export const store = configureStore({
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
+    getDefaultMiddleware()
+      .prepend(listenerMiddleware.middleware)
+      .prepend(boardSaver.middleware),
 });

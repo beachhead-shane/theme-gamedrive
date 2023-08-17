@@ -35,7 +35,7 @@ export const forageBehaviour: Behaviour = (
 
     if (kuduIndex !== -1 && newKuduPositionIndex !== -1) {
       board[newKuduPositionIndex].item = { ...board[kuduIndex].item };
-      board[kuduIndex].item = defaultItems[ItemType.None];
+      board[kuduIndex].item = defaultItems()[ItemType.None];
     }
   }
 

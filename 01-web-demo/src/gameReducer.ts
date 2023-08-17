@@ -17,7 +17,7 @@ export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
   timerId: number;
-  selectedCell?: { x: number; y: number };
+  selectedItemUID?: string;
   messages: Array<IMessage>;
   view: View;
   features: IFeatures;
@@ -31,7 +31,7 @@ const GenerateInitialState: () => gameStateSlice = () => {
         x,
         y,
         tileType: TileType.grass,
-        item: defaultItems[ItemType.None],
+        item: defaultItems()[ItemType.None],
       };
       cells.push(cell);
     }
@@ -75,7 +75,7 @@ const slice = createSlice({
       const index = state.cells.findIndex(
         (x) => x.x === action.payload.x && x.y === action.payload.y
       );
-      state.cells[index].item = defaultItems[action.payload.item];
+      state.cells[index].item = defaultItems()[action.payload.item];
     },
     processBoard(state) {
       const items = state.cells.filter((x) => {
@@ -111,18 +111,12 @@ const slice = createSlice({
     dismissMessage(state, action: PayloadAction<number>) {
       state.messages.splice(action.payload, 1);
     },
-    selectCell(state, action: PayloadAction<{ x: number; y: number }>) {
-      //deselect
-      console.log(state.selectedCell, action.payload);
-      if (
-        state.selectedCell?.x === action.payload.x &&
-        state.selectedCell?.y === action.payload.y
-      ) {
-        state.selectedCell = null;
-        return;
+    selectItem(state, action: PayloadAction<string>) {
+      if (state.selectedItemUID === action.payload) {
+        state.selectedItemUID = null;
+      } else {
+        state.selectedItemUID = action.payload;
       }
-
-      state.selectedCell = action.payload;
     },
     setView(state, action: PayloadAction<View>) {
       state.view = action.payload;
@@ -170,7 +164,7 @@ const slice = createSlice({
             x,
             y,
             tileType: tile,
-            item: defaultItems[ItemType.None],
+            item: defaultItems()[ItemType.None],
           };
           cells.push(cell);
         }
@@ -199,7 +193,7 @@ const slice = createSlice({
           }
 
           if (r === 0 && g === 255 && b === 0) {
-            cell.item = defaultItems[ItemType.Lodge];
+            cell.item = defaultItems()[ItemType.Lodge];
           }
 
           if (r === 255 && g === 255 && b === 0) {
@@ -221,7 +215,7 @@ export const {
   loadItems,
   processBoard,
   togglePlay,
-  selectCell,
+  selectItem,
   setAction,
   dismissMessage,
   processMessageAction,

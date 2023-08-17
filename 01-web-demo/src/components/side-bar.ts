@@ -111,11 +111,14 @@ class SideBar extends LitElement {
     this.time = store.getState().game.time;
     this.timerId = store.getState().game.timerId;
     this.messages = store.getState().game.messages;
-    const activeCell = store.getState().game.selectedCell;
+    if (this.messages.length === 0) {
+      this.selectedMessageIndex = -1;
+    }
+    const activeCell = store.getState().game.selectedItemUID;
     if (activeCell) {
       this.activeCell = store
         .getState()
-        .game.cells.find((x) => x.x === activeCell.x && x.y === activeCell.y);
+        .game.cells.find((x) => x.item.uid === activeCell);
     } else {
       this.activeCell = undefined;
     }
@@ -130,6 +133,14 @@ class SideBar extends LitElement {
   }
   onMessageClick(index: number) {
     this.selectedMessageIndex = index;
+
+    //turn this on for pacing videos.
+    /*const utterThis = new SpeechSynthesisUtterance(
+      this.messages[index].message
+    );
+    const synth = window.speechSynthesis;
+
+    synth.speak(utterThis);*/
   }
   render() {
     if (!this.activeCell) {
@@ -154,7 +165,6 @@ class SideBar extends LitElement {
                       <div
                         class="message-action"
                         @click=${() => {
-                          this.selectedMessageIndex = -1;
                           store.dispatch(
                             processMessageAction({
                               messageIndex: index,

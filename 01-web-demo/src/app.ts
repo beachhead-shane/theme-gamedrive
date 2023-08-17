@@ -98,6 +98,7 @@ class App extends LitElement {
             tileType=${cell.tileType}
             iconSrc=${getIconFromCell(cell)}
             ?itemVisible="${cell.item.isVisible}"
+            itemUID="${cell.item.uid}"
           ></game-cell>
         `
       )}`;

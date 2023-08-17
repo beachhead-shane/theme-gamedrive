@@ -20,7 +20,7 @@ export const praceTrackerBehaviour = (
   if (bestMoves.length > 0) {
     const move = bestMoves[0];
     const index = board.findIndex((x) => x.x === move.x && x.y === move.y);
-    board[index].item = defaultItems[ItemType.Tracker];
+    board[index].item = defaultItems()[ItemType.Tracker];
     board[itemIndex].item.activeAction = Action.None;
   }
 

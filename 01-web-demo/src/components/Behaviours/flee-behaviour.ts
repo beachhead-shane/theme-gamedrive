@@ -45,7 +45,7 @@ export const fleeBehaviour: Behaviour = (
         board[newKuduPositionIndex].item = { ...board[kuduIndex].item };
         board[newKuduPositionIndex].item.stats.fatigue++;
 
-        board[kuduIndex].item = defaultItems[ItemType.None];
+        board[kuduIndex].item = defaultItems()[ItemType.None];
       }
 
       return { stop: true, board };

@@ -58,7 +58,7 @@ export const huntBehaviour: Behaviour = (
     board[newItemPositionIndex].item = { ...board[itemIndex].item };
     board[newItemPositionIndex].item.stats.fatigue++;
 
-    const animalTrack = { ...defaultItems[ItemType.AnimalTrack] };
+    const animalTrack = { ...defaultItems()[ItemType.AnimalTrack] };
     if (!item.item.isVisible) {
       animalTrack.isVisible = false;
     }

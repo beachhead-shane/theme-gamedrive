@@ -12,7 +12,7 @@ export const destroyAtMoraleBehaviour = (
       (cell) => cell.x === item.x && cell.y === item.y
     );
 
-    board[itemIndex].item = defaultItems[ItemType.None];
+    board[itemIndex].item = defaultItems()[ItemType.None];
     return { stop: true, board };
   }
   return { stop: false, board };

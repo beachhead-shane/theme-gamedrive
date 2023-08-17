@@ -1,7 +1,7 @@
 import { css, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { store } from "../state";
-import { selectCell } from "../gameReducer";
+import { selectItem } from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { ItemType } from "../Types/Items/Item";
 class Cell extends LitElement {
@@ -29,6 +29,9 @@ class Cell extends LitElement {
   @state()
   timeOfDay: number;
 
+  @property()
+  itemUID: string;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -38,10 +41,9 @@ class Cell extends LitElement {
   }
 
   onStateUpdate() {
-    const selectedCell = store.getState().game.selectedCell;
+    const selectedCell = store.getState().game.selectedItemUID;
     this.timeOfDay = store.getState().game.time;
-    this.isSelected =
-      selectedCell && selectedCell.x === this.x && selectedCell.y === this.y;
+    this.isSelected = selectedCell === this.itemUID;
   }
 
   static styles = css`
@@ -116,7 +118,13 @@ class Cell extends LitElement {
       store.getState().game.cells.find((c) => c.x === this.x && c.y === this.y)
         .item.itemType != ItemType.None
     ) {
-      store.dispatch(selectCell({ x: this.x, y: this.y }));
+      store.dispatch(
+        selectItem(
+          store
+            .getState()
+            .game.cells.find((c) => c.x === this.x && c.y === this.y).item.uid
+        )
+      );
     }
   }
 

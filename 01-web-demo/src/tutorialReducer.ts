@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ItemType, MessageAction } from "./Types/Items/Item";
 import { store } from "./state";
-import { pause, placeItem, selectCell, sendMessage } from "./gameReducer";
+import { pause, placeItem, selectItem, sendMessage } from "./gameReducer";
 
 export interface tutorialSlice {
   tutorialIndex: 0;
@@ -62,7 +62,7 @@ export const tutorialSteps = [
     ) {
       return false;
     }
-    store.dispatch(selectCell(store.getState().game.selectedCell));
+    store.dispatch(selectItem(store.getState().game.selectedItemUID));
     store.dispatch(placeItem({ x: 1, y: 8, item: ItemType.Lion }));
     store.dispatch(
       sendMessage({
@@ -89,7 +89,7 @@ export const tutorialSteps = [
     }
 
     if (store.getState().game.cells[index].item.isVisible) {
-      store.dispatch(selectCell(store.getState().game.selectedCell));
+      store.dispatch(selectItem(store.getState().game.selectedItemUID));
       store.dispatch(pause());
       store.dispatch(
         sendMessage({
