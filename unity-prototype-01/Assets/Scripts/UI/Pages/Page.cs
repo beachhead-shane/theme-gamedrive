@@ -1,4 +1,5 @@
 //RenderHeads - Jeff Rusch
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,16 @@ namespace RenderHeads
         public void Close()
         {
             pageChangeAction(PageType.None);
+        }
+
+        public virtual void Show()
+        {
+            this.gameObject.SetActive(true);
+        }
+
+        public virtual void Hide()
+        {
+            this.gameObject.SetActive(false);
         }
         #endregion
 

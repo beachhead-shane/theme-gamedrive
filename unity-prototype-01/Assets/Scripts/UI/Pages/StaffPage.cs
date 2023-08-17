@@ -13,12 +13,9 @@ namespace RenderHeads
         #endregion
 
         #region Private Properties
+
         [SerializeField]
-        private ListButton listButtonprefab;
-        [SerializeField]
-        private List<ListButton> listButtons = new List<ListButton>();
-        [SerializeField]
-        private Transform listButtonSpawn;
+        private ScrollList scrollList;
 
         #endregion
 
@@ -26,12 +23,29 @@ namespace RenderHeads
         public override void Init(Action<PageType> pageChangeAction, Action pageBackAction)
         {
             base.Init(pageChangeAction, pageBackAction);
+            scrollList.Init(ShowView);
+        }
 
+        public override void Show()
+        {
+            base.Show();
+            scrollList.AddButton("fred", Guid.NewGuid());
+            scrollList.AddButton("tyler", Guid.NewGuid());
+            scrollList.AddButton("dirk", Guid.NewGuid());
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+            scrollList.Clear();
         }
         #endregion
 
         #region Private Methods
-        //private void AddButton
+        private void ShowView(Guid guid)
+        {
+            Debug.Log("Showing: " + guid.ToString());
+        }
         #endregion
     }
 }

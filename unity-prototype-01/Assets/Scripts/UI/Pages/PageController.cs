@@ -34,10 +34,10 @@ namespace RenderHeads
             {
                 if (pages[i].PageType == pageType)
                 {
-                    pages[i].gameObject.SetActive(true);
+                    pages[i].Show();
                 } else
                 {
-                    pages[i].gameObject.SetActive(false);
+                    pages[i].Hide();
                 }
             }
         }
