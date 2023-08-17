@@ -20,6 +20,7 @@ class GameBoard extends LitElement {
       border: solid;
       border-radius: 10px;
       padding: 10px;
+      background-color: #eee;
     }
   `;
 

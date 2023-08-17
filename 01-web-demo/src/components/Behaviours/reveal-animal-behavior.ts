@@ -2,7 +2,7 @@ import { IGameCell } from "../../Types/IGameCell";
 import { Class, Order, SleepingMode } from "../../Types/Items/Item";
 import { Behaviour } from "./BehaviourManager";
 
-const REVEAL_DISTANCE = 2;
+const REVEAL_DISTANCE = 3;
 
 export const revealAnimalBehaviour: Behaviour = (
   item: IGameCell,

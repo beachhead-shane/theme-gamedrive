@@ -1,108 +1,27 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { store } from "./state";
-import { Action, ItemType, defaultItems } from "./Types/Items/Item";
+import {
+  Action,
+  MessageAction,
+  defaultItems,
+  ItemType,
+} from "./Types/Items/Item";
 import { TileType } from "./Types/TileType";
 import { IGameCell } from "./Types/IGameCell";
-import { BehaviourManager } from "./components/Behaviours/BehaviourManager";
-import { sleepBehaviour } from "./components/Behaviours/sleep-behaviour";
-import { huntBehaviour } from "./components/Behaviours/hunt-behaviour";
-import { fleeBehaviour } from "./components/Behaviours/flee-behaviour";
-import { forageBehaviour } from "./components/Behaviours/forage-behaviour";
-import { trackSleepingPredatorBehaviour } from "./components/Behaviours/tracker-predator-behaviour";
-import { revealAnimalBehaviour } from "./components/Behaviours/reveal-animal-behavior";
-import { followTrackBehaviour } from "./components/Behaviours/follow-track-behavior";
-import { ageBehaviour } from "./components/Behaviours/age-behaviour";
-import { destroyAtAgeBehaviour } from "./components/Behaviours/destroy-at-age-behavior";
-import { headHomeBehaviour } from "./components/Behaviours/head-home-behaviour";
-import { fatiguedBehaviour } from "./components/Behaviours/fatigued-behaviour";
-import { destroyAtMoraleBehaviour } from "./components/Behaviours/destroy-at-morale-behavior";
+import { IFeatures } from "./Types/IFeatures";
+import { View } from "./Types/View";
+import { behaviors } from "./components/Behaviours/behaviors";
+import { IMessage } from "./Types/IMessage";
 
-export interface IMessage {
-  from: string;
-  message: string;
-}
 export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
   timerId: number;
   selectedCell?: { x: number; y: number };
   messages: Array<IMessage>;
+  view: View;
+  features: IFeatures;
 }
-
-const behaviors = {
-  None: (item: IGameCell, board: Array<IGameCell>) => {
-    return board;
-  },
-  Lion: (lion: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
-    const behaviourManager: BehaviourManager = new BehaviourManager([
-      ageBehaviour,
-      sleepBehaviour,
-      fatiguedBehaviour,
-      huntBehaviour,
-    ]);
-    return behaviourManager.run(lion, board, timeOfDay);
-  },
-  Kudu: (kudu: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
-    const behaviourManager: BehaviourManager = new BehaviourManager([
-      ageBehaviour,
-      fleeBehaviour,
-      sleepBehaviour,
-      fatiguedBehaviour,
-      forageBehaviour,
-    ]);
-    return behaviourManager.run(kudu, board, timeOfDay);
-  },
-  Lodge: (item: IGameCell, board: Array<IGameCell>) => {
-    return board;
-  },
-  AnimalTrack: (
-    item: IGameCell,
-    board: Array<IGameCell>,
-    timeOfDay: number
-  ) => {
-    const destoryAtAgeThreeBehaviour = () => {
-      return destroyAtAgeBehaviour(item, board, 3);
-    };
-    const behaviourManager: BehaviourManager = new BehaviourManager([
-      ageBehaviour,
-      destoryAtAgeThreeBehaviour,
-    ]);
-    return behaviourManager.run(item, board, timeOfDay);
-  },
-  Tracker: (tracker: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
-    if (tracker.item.activeAction === Action.Track) {
-      const behaviourManager: BehaviourManager = new BehaviourManager([
-        destroyAtMoraleBehaviour,
-        ageBehaviour,
-        fatiguedBehaviour,
-        revealAnimalBehaviour,
-        trackSleepingPredatorBehaviour,
-        followTrackBehaviour,
-        fleeBehaviour,
-      ]);
-      return behaviourManager.run(tracker, board, timeOfDay);
-    }
-
-    if (tracker.item.activeAction === Action.LookOut) {
-      const behaviourManager: BehaviourManager = new BehaviourManager([
-        fleeBehaviour,
-        destroyAtMoraleBehaviour,
-      ]);
-      return behaviourManager.run(tracker, board, timeOfDay);
-    }
-
-    if (tracker.item.activeAction === Action.HeadHome) {
-      const behaviourManager: BehaviourManager = new BehaviourManager([
-        fleeBehaviour,
-        headHomeBehaviour,
-      ]);
-      return behaviourManager.run(tracker, board, timeOfDay);
-    }
-  },
-  Truck: (item: IGameCell, board: Array<IGameCell>) => {
-    return board;
-  },
-};
 const GenerateInitialState: () => gameStateSlice = () => {
   const cells: Array<IGameCell> = [];
 
@@ -121,17 +40,9 @@ const GenerateInitialState: () => gameStateSlice = () => {
     cells,
     time: 20,
     timerId: 0,
-    messages: [
-      {
-        from: "Tracker",
-        message: "I am camping out near the west, no sign of animals",
-      },
-      {
-        from: "Lodge",
-        message:
-          "The guests are getting bored, lets try find a predator so we can arrange a game drive",
-      },
-    ],
+    messages: [],
+    view: View.None,
+    features: {},
   };
 };
 const initialState = GenerateInitialState();
@@ -140,6 +51,9 @@ const slice = createSlice({
   name: "game",
   initialState,
   reducers: {
+    sendMessage(state, action: PayloadAction<IMessage>) {
+      state.messages.push(action.payload);
+    },
     togglePlay(state) {
       if (state.timerId === 0) {
         state.timerId = window.setInterval(() => {
@@ -150,8 +64,20 @@ const slice = createSlice({
         state.timerId = 0;
       }
     },
+    pause(state) {
+      window.clearInterval(state.timerId);
+      state.timerId = 0;
+    },
+    placeItem(
+      state,
+      action: PayloadAction<{ x: number; y: number; item: ItemType }>
+    ) {
+      const index = state.cells.findIndex(
+        (x) => x.x === action.payload.x && x.y === action.payload.y
+      );
+      state.cells[index].item = defaultItems[action.payload.item];
+    },
     processBoard(state) {
-      state.selectedCell = undefined;
       const items = state.cells.filter((x) => {
         if (x.item.itemType !== ItemType.None) {
           return x;
@@ -168,13 +94,19 @@ const slice = createSlice({
     },
     setAction(
       state,
-      action: PayloadAction<{ cell: IGameCell; action: Action }>
+      action: PayloadAction<{
+        cell: IGameCell;
+        action: Action;
+        momentary: boolean;
+      }>
     ) {
       console.log(action);
       const index = state.cells.findIndex(
         (x) => x.x == action.payload.cell.x && x.y === action.payload.cell.y
       );
+      //if (!action.payload.momentary) {
       state.cells[index].item.activeAction = action.payload.action;
+      //}
     },
     dismissMessage(state, action: PayloadAction<number>) {
       state.messages.splice(action.payload, 1);
@@ -189,13 +121,35 @@ const slice = createSlice({
         state.selectedCell = null;
         return;
       }
-      if (state.timerId !== 0) {
-        clearInterval(state.timerId);
-        state.timerId = 0;
-      }
+
       state.selectedCell = action.payload;
     },
+    setView(state, action: PayloadAction<View>) {
+      state.view = action.payload;
+    },
+    processMessageAction(
+      state,
+      action: PayloadAction<{
+        messageIndex: number;
+        messageAction: MessageAction;
+      }>
+    ) {
+      switch (action.payload.messageAction) {
+        case MessageAction.EnableMap:
+          state.view = View.Map;
+          state.features.map = true;
+          break;
 
+        case MessageAction.EnableRelationships:
+          state.view = View.Relationships;
+          state.features.relationships = true;
+          break;
+        case MessageAction.Dismiss:
+          state.messages.splice(action.payload.messageIndex, 1);
+          break;
+      }
+      state.messages.splice(action.payload.messageIndex, 1);
+    },
     loadMap(state, action: PayloadAction<Array<number>>) {
       const cells: Array<IGameCell> = [];
       const imageData = action.payload;
@@ -237,11 +191,11 @@ const slice = createSlice({
           const b = imageData[xOffset + yOffset + 2];
           const cell = { ...state.cells[i] };
           if (r === 255 && g === 0 && b === 0) {
-            cell.item = defaultItems[ItemType.Lion];
+            //   cell.item = defaultItems[ItemType.Lion];
           }
 
           if (r === 0 && g === 0 && b === 255) {
-            cell.item = defaultItems[ItemType.Kudu];
+            //    cell.item = defaultItems[ItemType.Kudu];
           }
 
           if (r === 0 && g === 255 && b === 0) {
@@ -249,7 +203,7 @@ const slice = createSlice({
           }
 
           if (r === 255 && g === 255 && b === 0) {
-            cell.item = defaultItems[ItemType.Tracker];
+            //   cell.item = defaultItems[ItemType.Tracker];
           }
           newCells.push(cell);
           i++;
@@ -262,6 +216,7 @@ const slice = createSlice({
 });
 
 export const {
+  pause,
   loadMap,
   loadItems,
   processBoard,
@@ -269,5 +224,9 @@ export const {
   selectCell,
   setAction,
   dismissMessage,
+  processMessageAction,
+  sendMessage,
+  placeItem,
+  setView,
 } = slice.actions;
 export default slice.reducer;

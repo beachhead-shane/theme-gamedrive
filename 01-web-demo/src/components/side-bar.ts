@@ -3,12 +3,12 @@ import { css, html, LitElement, nothing } from "lit";
 import { state } from "lit/decorators.js";
 import { store } from "../state";
 import {
-  dismissMessage,
-  IMessage,
   processBoard,
+  processMessageAction,
   setAction,
   togglePlay,
 } from "../gameReducer";
+import { IMessage } from "../Types/IMessage";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { Action } from "../Types/Items/Item";
 import { getIconFromCell, IGameCell } from "../Types/IGameCell";
@@ -66,11 +66,12 @@ class SideBar extends LitElement {
       padding: 5px;
       text-align: left;
       user-select: none;
+      line-break: pre;
     }
 
     .expand {
       text-overflow: initial;
-      white-space: initial;
+      white-space: pre-line;
       overflow: visible;
     }
 
@@ -124,8 +125,8 @@ class SideBar extends LitElement {
     store.dispatch(togglePlay());
   }
 
-  selectAction(cell: IGameCell, action: Action) {
-    store.dispatch(setAction({ cell, action }));
+  selectAction(cell: IGameCell, action: Action, momentary: boolean) {
+    store.dispatch(setAction({ cell, action, momentary }));
   }
   onMessageClick(index: number) {
     this.selectedMessageIndex = index;
@@ -148,15 +149,24 @@ class SideBar extends LitElement {
             >
               <b>${message.from}:</b> ${message.message}
               ${this.selectedMessageIndex === index
-                ? html`<div
-                    class="message-action"
-                    @click=${() => {
-                      console.log("dismiss");
-                      store.dispatch(dismissMessage());
-                    }}
-                  >
-                    dismiss
-                  </div>`
+                ? message.action.map(
+                    (act) => html`
+                      <div
+                        class="message-action"
+                        @click=${() => {
+                          this.selectedMessageIndex = -1;
+                          store.dispatch(
+                            processMessageAction({
+                              messageIndex: index,
+                              messageAction: act.action,
+                            })
+                          );
+                        }}
+                      >
+                        ${act.friendlyName}
+                      </div>
+                    `
+                  )
                 : nothing}
             </div>
           `
@@ -181,7 +191,11 @@ class SideBar extends LitElement {
                 ? "active"
                 : ""}"
               @click="${() => {
-                this.selectAction(this.activeCell, actionDetails.action);
+                this.selectAction(
+                  this.activeCell,
+                  actionDetails.action,
+                  actionDetails.momentary
+                );
               }}"
             >
               ${actionDetails.friendlyName}

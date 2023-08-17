@@ -70,6 +70,10 @@ class Cell extends LitElement {
       border: 5px solid black;
       box-sizing: border-box;
     }
+    .selected-inner {
+      min-width: 40px !important;
+      height: 40px !important;
+    }
     .grass {
       background-color: #22aa33;
     }
@@ -145,7 +149,7 @@ class Cell extends LitElement {
   ];
   render() {
     return html`<div
-      class="cell ${this.tileType} ${this.isSelected ? "selected" : ""}"
+      class="cell ${this.tileType}  ${this.isSelected ? "selected" : ""}"
       id="game-cell-${this.x}-${this.y}"
       style="${this.itemVisible
         ? `background-image:url('icons/${this.iconSrc}'`
@@ -153,7 +157,9 @@ class Cell extends LitElement {
       @click="${this.onCellClick}"
     >
       <div
-        class="color-overlay ${this.tileType}"
+        class="color-overlay ${this.tileType}  ${this.isSelected
+          ? "selected-inner"
+          : ""}"
         style="${this.itemVisible
           ? `background-image:url('icons/${this.iconSrc}'`
           : ""});

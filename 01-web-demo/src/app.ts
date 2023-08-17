@@ -4,7 +4,8 @@ import "./components/cell";
 import "./components/bottom-bar";
 import "./components/side-bar";
 import { store } from "./state";
-import { loadItems, loadMap } from "./gameReducer";
+import { loadMap, togglePlay } from "./gameReducer";
+import { View } from "./Types/View";
 import { getIconFromCell, IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
 import { Unsubscribe } from "@reduxjs/toolkit";
@@ -27,6 +28,9 @@ class App extends LitElement {
   gameData: Array<IGameCell> = [];
 
   @state()
+  view: View;
+
+  @state()
   time: number;
 
   @state()
@@ -37,11 +41,13 @@ class App extends LitElement {
     super.connectedCallback();
     this.unsubscribe = store.subscribe(this.onStateUpdate.bind(this));
     this.onStateUpdate();
+    store.dispatch(togglePlay());
   }
 
   onStateUpdate() {
     this.gameData = store.getState().game.cells;
     this.time = store.getState().game.time;
+    this.view = store.getState().game.view;
     console.log("on state update", this.gameData);
   }
 
@@ -68,13 +74,13 @@ class App extends LitElement {
       const imageItems = new Image();
       imageItems.onload = function () {
         ctx.drawImage(imageItems, 0, 0);
-        const imageDataLion = ctx.getImageData(
+        /*const imageDataLion = ctx.getImageData(
           0,
           0,
           imageItems.width,
           imageItems.height
-        );
-        store.dispatch(loadItems(Array.from(imageDataLion.data)));
+        );*/
+        // store.dispatch(loadItems(Array.from(imageDataLion.data)));
       };
       imageItems.src = srcItems;
     };
@@ -82,22 +88,25 @@ class App extends LitElement {
   }
 
   render() {
+    let view = html``;
+    if (this.view === View.Map) {
+      view = html` ${this.gameData.map(
+        (cell) => html`
+          <game-cell
+            x=${cell.x}
+            y=${cell.y}
+            tileType=${cell.tileType}
+            iconSrc=${getIconFromCell(cell)}
+            ?itemVisible="${cell.item.isVisible}"
+          ></game-cell>
+        `
+      )}`;
+    }
+
     return html`
       <div class="outer-container">
         <side-bar></side-bar>
-        <game-board>
-          ${this.gameData.map(
-            (cell) => html`
-              <game-cell
-                x=${cell.x}
-                y=${cell.y}
-                tileType=${cell.tileType}
-                iconSrc=${getIconFromCell(cell)}
-                ?itemVisible="${cell.item.isVisible}"
-              ></game-cell>
-            `
-          )}
-        </game-board>
+        <game-board> ${view} </game-board>
       </div>
       <bottom-bar time=${this.time}></bottom-bar>
     `;

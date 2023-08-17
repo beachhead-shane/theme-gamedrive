@@ -27,13 +27,26 @@ export enum Class {
   Object,
 }
 export enum Action {
+  None,
   LookOut,
   HeadHome,
   Track,
+  DeployTrackerFromLodge,
+}
+
+export interface IMessageAction {
+  friendlyName: string;
+  action: MessageAction;
+}
+export enum MessageAction {
+  EnableMap,
+  EnableRelationships,
+  Dismiss,
 }
 
 export interface IAction {
   friendlyName: string;
+  momentary?: boolean; //if true it doesn't toggle on
   action: Action;
 }
 interface IStats {
@@ -95,6 +108,13 @@ export const defaultItems: IDefaultItems = {
     order: Order.None,
     age: 0,
     stats: {},
+    actions: [
+      {
+        friendlyName: "Deploy Tracker",
+        momentary: true,
+        action: Action.DeployTrackerFromLodge,
+      },
+    ],
   },
   Tracker: {
     itemType: ItemType.Tracker,
