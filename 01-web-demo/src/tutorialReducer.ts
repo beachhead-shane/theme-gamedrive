@@ -119,8 +119,17 @@ const slice = createSlice({
     advanceTutorial(state) {
       state.tutorialIndex++;
     },
+    loadSaveForTutorialSlice(state) {
+      if (localStorage.getItem("board_state")) {
+        const stateFromDisk = JSON.parse(localStorage.getItem("board_state"))[
+          "tutorial"
+        ];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        state.tutorialIndex = stateFromDisk.tutorialIndex;
+      }
+    },
   },
 });
 
-export const { advanceTutorial } = slice.actions;
+export const { advanceTutorial, loadSaveForTutorialSlice } = slice.actions;
 export default slice.reducer;

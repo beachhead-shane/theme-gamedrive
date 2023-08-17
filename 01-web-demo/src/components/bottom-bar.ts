@@ -71,6 +71,10 @@ class BottomBar extends LitElement {
     store.dispatch(togglePlay());
   }
 
+  resetGame() {
+    localStorage.removeItem("board_state");
+    location.reload();
+  }
   viewMap() {
     store.dispatch(setView(View.Map));
   }
@@ -89,6 +93,8 @@ class BottomBar extends LitElement {
             <button @click="${this.play}">
               ${this.timerId === 0 ? `play` : `pause`}
             </button>
+
+            <button @click="${this.resetGame}">Reset Game</button>
 
             ${this.timerId === 0
               ? // ? html`<button @click="${this.advance}">advance one hour</button>`

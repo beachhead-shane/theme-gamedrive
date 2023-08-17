@@ -4,11 +4,12 @@ import "./components/cell";
 import "./components/bottom-bar";
 import "./components/side-bar";
 import { store } from "./state";
-import { loadMap, togglePlay } from "./gameReducer";
+import { loadMap, loadSaveForGameSlice, togglePlay } from "./gameReducer";
 import { View } from "./Types/View";
 import { getIconFromCell, IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
 import { Unsubscribe } from "@reduxjs/toolkit";
+import { loadSaveForTutorialSlice } from "./tutorialReducer";
 class App extends LitElement {
   constructor() {
     super();
@@ -41,7 +42,6 @@ class App extends LitElement {
     super.connectedCallback();
     this.unsubscribe = store.subscribe(this.onStateUpdate.bind(this));
     this.onStateUpdate();
-    store.dispatch(togglePlay());
   }
 
   onStateUpdate() {
@@ -66,6 +66,13 @@ class App extends LitElement {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
+    //If board state is set just load it
+    if (localStorage.getItem("board_state") !== null) {
+      store.dispatch(loadSaveForGameSlice());
+      store.dispatch(loadSaveForTutorialSlice());
+      return;
+    }
+
     const imageMap = new Image();
     imageMap.onload = function () {
       ctx.drawImage(imageMap, 0, 0);
@@ -81,6 +88,7 @@ class App extends LitElement {
           imageItems.height
         );*/
         // store.dispatch(loadItems(Array.from(imageDataLion.data)));
+        store.dispatch(togglePlay());
       };
       imageItems.src = srcItems;
     };

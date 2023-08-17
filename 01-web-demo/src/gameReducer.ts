@@ -54,6 +54,27 @@ const slice = createSlice({
     sendMessage(state, action: PayloadAction<IMessage>) {
       state.messages.push(action.payload);
     },
+    loadSaveForGameSlice(state) {
+      if (localStorage.getItem("board_state")) {
+        const stateFromDisk = JSON.parse(localStorage.getItem("board_state"))[
+          "game"
+        ];
+
+        state.cells = stateFromDisk.cells;
+        state.features = stateFromDisk.feautures;
+        state.messages = stateFromDisk.messages;
+        state.selectedItemUID = stateFromDisk.selectedItemUID;
+        state.time = stateFromDisk.time;
+        state.timerId = stateFromDisk.timerId;
+        //we need to start timer
+        if (state.timerId && state.timerId > 0) {
+          state.timerId = window.setInterval(() => {
+            store.dispatch(processBoard());
+          }, 2000);
+        }
+        state.view = stateFromDisk.view;
+      }
+    },
     togglePlay(state) {
       if (state.timerId === 0) {
         state.timerId = window.setInterval(() => {
@@ -222,5 +243,6 @@ export const {
   sendMessage,
   placeItem,
   setView,
+  loadSaveForGameSlice,
 } = slice.actions;
 export default slice.reducer;
