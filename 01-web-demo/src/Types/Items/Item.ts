@@ -36,6 +36,10 @@ export interface IAction {
   friendlyName: string;
   action: Action;
 }
+interface IStats {
+  fatigue?: number;
+  morale?: number;
+}
 export interface Item {
   itemType: ItemType;
   isVisible: boolean;
@@ -45,6 +49,7 @@ export interface Item {
   age: number;
   actions?: Array<IAction>;
   activeAction?: Action;
+  stats: IStats;
 }
 
 interface IDefaultItems {
@@ -58,6 +63,7 @@ export const defaultItems: IDefaultItems = {
     class: Class.None,
     order: Order.None,
     age: 0,
+    stats: {},
   },
   Lion: {
     itemType: ItemType.Lion,
@@ -66,6 +72,9 @@ export const defaultItems: IDefaultItems = {
     class: Class.Animal,
     order: Order.Predator,
     age: 0,
+    stats: {
+      fatigue: 0,
+    },
   },
   Kudu: {
     itemType: ItemType.Kudu,
@@ -74,6 +83,9 @@ export const defaultItems: IDefaultItems = {
     class: Class.Animal,
     order: Order.Prey,
     age: 0,
+    stats: {
+      fatigue: 0,
+    },
   },
   Lodge: {
     itemType: ItemType.Lodge,
@@ -82,6 +94,7 @@ export const defaultItems: IDefaultItems = {
     class: Class.Object,
     order: Order.None,
     age: 0,
+    stats: {},
   },
   Tracker: {
     itemType: ItemType.Tracker,
@@ -91,6 +104,11 @@ export const defaultItems: IDefaultItems = {
     order: Order.Prey,
     age: 0,
     activeAction: Action.LookOut,
+    stats: {
+      fatigue: 0,
+      morale: 5,
+    },
+
     actions: [
       {
         friendlyName: "Keep Look Out",
@@ -113,6 +131,7 @@ export const defaultItems: IDefaultItems = {
     class: Class.Object,
     order: Order.None,
     age: 0,
+    stats: {},
   },
   AnimalTrack: {
     itemType: ItemType.AnimalTrack,
@@ -121,5 +140,6 @@ export const defaultItems: IDefaultItems = {
     class: Class.Object,
     order: Order.None,
     age: 0,
+    stats: {},
   },
 };

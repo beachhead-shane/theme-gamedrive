@@ -55,6 +55,7 @@ export const headHomeBehaviour: Behaviour = (
 
   if (itemIndex !== -1 && newItemPositionIndex !== -1) {
     board[newItemPositionIndex].item = { ...board[itemIndex].item };
+    board[newItemPositionIndex].item.stats.fatigue++;
     board[itemIndex].item = defaultItems[ItemType.None];
   }
 

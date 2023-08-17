@@ -26,18 +26,22 @@ class Cell extends LitElement {
   @state()
   isSelected: boolean;
 
+  @state()
+  timeOfDay: number;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
     this.unsubscribe = store.subscribe(this.onStateUpdate.bind(this));
+
     this.onStateUpdate();
   }
 
   onStateUpdate() {
     const selectedCell = store.getState().game.selectedCell;
-    if (selectedCell) {
-      this.isSelected = selectedCell.x === this.x && selectedCell.y === this.y;
-    }
+    this.timeOfDay = store.getState().game.time;
+    this.isSelected =
+      selectedCell && selectedCell.x === this.x && selectedCell.y === this.y;
   }
 
   static styles = css`
@@ -76,8 +80,33 @@ class Cell extends LitElement {
     .road {
       background-color: #ddaa33;
     }
-  `;
+    .text {
+      pointer-events: none;
+      user-select: none;
+    }
+    .color-overlay {
+      filter: sepia(100%) saturate(200%) hue-rotate(121deg);
 
+      display: table-cell;
+      min-width: 50px;
+      height: 50px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 0;
+
+      gap: 0;
+      border-radius: 10px;
+      font-size: 0.6em;
+      color: rgba(0, 0, 0, 0.3);
+      background-repeat: no-repeat;
+      background-size: auto;
+      background-position: center;
+      mix-blend-mode: multiply;
+    }
+  `;
+  lerp = (a: number, b: number, alpha: number) => {
+    return a + alpha * (b - a);
+  };
   onCellClick() {
     if (
       store.getState().game.cells.find((c) => c.x === this.x && c.y === this.y)
@@ -86,6 +115,34 @@ class Cell extends LitElement {
       store.dispatch(selectCell({ x: this.x, y: this.y }));
     }
   }
+
+  tints = [
+    1, // 00:00
+    1,
+    1,
+    1,
+    1,
+    0.8,
+    0.6,
+    0.4,
+    0.2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1,
+    1,
+    1,
+    1,
+  ];
   render() {
     return html`<div
       class="cell ${this.tileType} ${this.isSelected ? "selected" : ""}"
@@ -95,7 +152,16 @@ class Cell extends LitElement {
         : ""})"
       @click="${this.onCellClick}"
     >
-      ${this.x}-${this.y}
+      <div
+        class="color-overlay ${this.tileType}"
+        style="${this.itemVisible
+          ? `background-image:url('icons/${this.iconSrc}'`
+          : ""});
+          opacity:${this.tints[this.timeOfDay]}
+          "
+      >
+        <span class="text"> ${this.x}-${this.y}</span>
+      </div>
     </div>`;
   }
 }

@@ -1,8 +1,14 @@
 /* eslint-disable lit/no-template-arrow */
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, nothing } from "lit";
 import { state } from "lit/decorators.js";
 import { store } from "../state";
-import { processBoard, setAction, togglePlay } from "../gameReducer";
+import {
+  dismissMessage,
+  IMessage,
+  processBoard,
+  setAction,
+  togglePlay,
+} from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { Action } from "../Types/Items/Item";
 import { getIconFromCell, IGameCell } from "../Types/IGameCell";
@@ -43,6 +49,37 @@ class SideBar extends LitElement {
       padding-top: 5px;
       padding-bottom: 10px;
     }
+    .stay {
+      font-size: 0.5em;
+    }
+
+    .message {
+      background-color: #fff;
+      border: solid 1px;
+      border-radius: 5px;
+      width: calc (100%-20px);
+      margin: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 10px;
+      padding: 5px;
+      text-align: left;
+      user-select: none;
+    }
+
+    .expand {
+      text-overflow: initial;
+      white-space: initial;
+      overflow: visible;
+    }
+
+    .message-action {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+      padding: 3px;
+    }
   `;
   advance() {
     store.dispatch(processBoard());
@@ -56,6 +93,12 @@ class SideBar extends LitElement {
   @state()
   activeCell: IGameCell;
 
+  @state()
+  messages: Array<IMessage>;
+
+  @state()
+  selectedMessageIndex = -1;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -66,6 +109,7 @@ class SideBar extends LitElement {
   onStateUpdate() {
     this.time = store.getState().game.time;
     this.timerId = store.getState().game.timerId;
+    this.messages = store.getState().game.messages;
     const activeCell = store.getState().game.selectedCell;
     if (activeCell) {
       this.activeCell = store
@@ -83,9 +127,41 @@ class SideBar extends LitElement {
   selectAction(cell: IGameCell, action: Action) {
     store.dispatch(setAction({ cell, action }));
   }
+  onMessageClick(index: number) {
+    this.selectedMessageIndex = index;
+  }
   render() {
     if (!this.activeCell) {
-      return html`<div class="container"></div>`;
+      return html`<div class="container">
+        <img src="thumbnails/cellphone.png" class="thumbnail" />
+        <div class="heading"></div>
+        <b>Messages</b>
+        ${this.messages.map(
+          (message, index) => html`
+            <div
+              @click=${() => {
+                this.onMessageClick(index);
+              }}
+              class="message ${this.selectedMessageIndex === index
+                ? "expand"
+                : ""}"
+            >
+              <b>${message.from}:</b> ${message.message}
+              ${this.selectedMessageIndex === index
+                ? html`<div
+                    class="message-action"
+                    @click=${() => {
+                      console.log("dismiss");
+                      store.dispatch(dismissMessage());
+                    }}
+                  >
+                    dismiss
+                  </div>`
+                : nothing}
+            </div>
+          `
+        )}
+      </div>`;
     }
     return html`<div class="container">
       <img
@@ -110,6 +186,18 @@ class SideBar extends LitElement {
             >
               ${actionDetails.friendlyName}
             </button>
+          </div>
+        `
+      )}
+
+      <div class="heading">
+        <b>Stats</b>
+      </div>
+      ${Object.keys(this.activeCell.item.stats).map(
+        (item) => html`
+          <div class="stat">
+            ${item}:
+            ${(this.activeCell.item.stats as { [key: string]: number })[item]}
           </div>
         `
       )}

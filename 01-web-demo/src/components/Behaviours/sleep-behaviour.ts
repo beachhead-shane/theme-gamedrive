@@ -27,5 +27,11 @@ export const sleepBehaviour: Behaviour = (
   board: Array<IGameCell>,
   timeOfDay: number
 ) => {
+  if (isSleeping(item.item, timeOfDay)) {
+    if (item.item.stats.fatigue && item.item.stats.fatigue > 0) {
+      const index = board.findIndex((x) => x.x === item.x && x.y === item.y);
+      board[index].item.stats.fatigue--;
+    }
+  }
   return { stop: isSleeping(item.item, timeOfDay), board };
 };

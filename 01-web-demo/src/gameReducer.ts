@@ -14,12 +14,19 @@ import { followTrackBehaviour } from "./components/Behaviours/follow-track-behav
 import { ageBehaviour } from "./components/Behaviours/age-behaviour";
 import { destroyAtAgeBehaviour } from "./components/Behaviours/destroy-at-age-behavior";
 import { headHomeBehaviour } from "./components/Behaviours/head-home-behaviour";
+import { fatiguedBehaviour } from "./components/Behaviours/fatigued-behaviour";
+import { destroyAtMoraleBehaviour } from "./components/Behaviours/destroy-at-morale-behavior";
 
+export interface IMessage {
+  from: string;
+  message: string;
+}
 export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
   timerId: number;
   selectedCell?: { x: number; y: number };
+  messages: Array<IMessage>;
 }
 
 const behaviors = {
@@ -30,6 +37,7 @@ const behaviors = {
     const behaviourManager: BehaviourManager = new BehaviourManager([
       ageBehaviour,
       sleepBehaviour,
+      fatiguedBehaviour,
       huntBehaviour,
     ]);
     return behaviourManager.run(lion, board, timeOfDay);
@@ -39,6 +47,7 @@ const behaviors = {
       ageBehaviour,
       fleeBehaviour,
       sleepBehaviour,
+      fatiguedBehaviour,
       forageBehaviour,
     ]);
     return behaviourManager.run(kudu, board, timeOfDay);
@@ -63,7 +72,9 @@ const behaviors = {
   Tracker: (tracker: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
     if (tracker.item.activeAction === Action.Track) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
+        destroyAtMoraleBehaviour,
         ageBehaviour,
+        fatiguedBehaviour,
         revealAnimalBehaviour,
         trackSleepingPredatorBehaviour,
         followTrackBehaviour,
@@ -75,6 +86,7 @@ const behaviors = {
     if (tracker.item.activeAction === Action.LookOut) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
         fleeBehaviour,
+        destroyAtMoraleBehaviour,
       ]);
       return behaviourManager.run(tracker, board, timeOfDay);
     }
@@ -105,7 +117,22 @@ const GenerateInitialState: () => gameStateSlice = () => {
       cells.push(cell);
     }
   }
-  return { cells, time: 20, timerId: 0 };
+  return {
+    cells,
+    time: 20,
+    timerId: 0,
+    messages: [
+      {
+        from: "Tracker",
+        message: "I am camping out near the west, no sign of animals",
+      },
+      {
+        from: "Lodge",
+        message:
+          "The guests are getting bored, lets try find a predator so we can arrange a game drive",
+      },
+    ],
+  };
 };
 const initialState = GenerateInitialState();
 
@@ -149,7 +176,19 @@ const slice = createSlice({
       );
       state.cells[index].item.activeAction = action.payload.action;
     },
+    dismissMessage(state, action: PayloadAction<number>) {
+      state.messages.splice(action.payload, 1);
+    },
     selectCell(state, action: PayloadAction<{ x: number; y: number }>) {
+      //deselect
+      console.log(state.selectedCell, action.payload);
+      if (
+        state.selectedCell?.x === action.payload.x &&
+        state.selectedCell?.y === action.payload.y
+      ) {
+        state.selectedCell = null;
+        return;
+      }
       if (state.timerId !== 0) {
         clearInterval(state.timerId);
         state.timerId = 0;
@@ -229,5 +268,6 @@ export const {
   togglePlay,
   selectCell,
   setAction,
+  dismissMessage,
 } = slice.actions;
 export default slice.reducer;
