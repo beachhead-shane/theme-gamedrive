@@ -3,10 +3,11 @@ import "./components/game-board";
 import "./components/cell";
 import "./components/bottom-bar";
 import "./components/side-bar";
+import "./components/relationships-view";
 import { store } from "./state";
 import { loadMap, loadSaveForGameSlice, togglePlay } from "./gameReducer";
 import { View } from "./Types/View";
-import { getIconFromCell, IGameCell } from "./Types/IGameCell";
+import { IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { loadSaveForTutorialSlice } from "./tutorialReducer";
@@ -48,7 +49,6 @@ class App extends LitElement {
     this.gameData = store.getState().game.cells;
     this.time = store.getState().game.time;
     this.view = store.getState().game.view;
-    console.log("on state update", this.gameData);
   }
 
   protected firstUpdated(
@@ -99,18 +99,12 @@ class App extends LitElement {
     let view = html``;
     if (this.view === View.Map) {
       view = html` ${this.gameData.map(
-        (cell) => html`
-          <game-cell
-            x=${cell.x}
-            y=${cell.y}
-            tileType=${cell.tileType}
-            iconSrc=${getIconFromCell(cell)}
-            ?itemVisible="${cell.item.isVisible}"
-            itemUID="${cell.item.uid}"
-            age=${cell.item.age}
-          ></game-cell>
-        `
+        (cell) => html` <game-cell x=${cell.x} y=${cell.y}></game-cell> `
       )}`;
+    }
+
+    if (this.view === View.Relationships) {
+      view = html`<relationships-view></relationships-view>`;
     }
 
     return html`

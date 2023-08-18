@@ -4,15 +4,11 @@ import { store } from "../state";
 import { selectItem } from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { ItemType } from "../Types/Items/Item";
+import { getIconFromCell } from "../Types/IGameCell";
 class Cell extends LitElement {
   constructor() {
     super();
   }
-  @property({ type: String })
-  iconSrc: string = "";
-
-  @property({ type: String })
-  tileType: string;
 
   @property({ type: Number })
   x: number;
@@ -20,10 +16,16 @@ class Cell extends LitElement {
   @property({ type: Number })
   y: number;
 
-  @property({ type: Boolean })
+  @state()
+  iconSrc: string = "";
+
+  @state()
+  tileType: string;
+
+  @state()
   itemVisible: boolean;
 
-  @property({ type: Number })
+  @state()
   age: number = 0;
 
   @state()
@@ -31,9 +33,6 @@ class Cell extends LitElement {
 
   @state()
   timeOfDay: number;
-
-  @property()
-  itemUID: string;
 
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
@@ -43,9 +42,15 @@ class Cell extends LitElement {
   }
 
   onStateUpdate() {
-    const selectedCell = store.getState().game.selectedItemUID;
     this.timeOfDay = store.getState().game.time;
-    this.isSelected = selectedCell === this.itemUID;
+    const cell = store
+      .getState()
+      .game.cells.find((x) => x.x === this.x && x.y === this.y);
+    this.isSelected = store.getState().game.selectedItemUID === cell.item.uid;
+    this.tileType = cell.tileType;
+    this.itemVisible = cell.item.isVisible;
+    this.age = cell.item.age;
+    this.iconSrc = getIconFromCell(cell);
   }
 
   static styles = css`

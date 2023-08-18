@@ -20,6 +20,8 @@ export const getIconFromCell = (cell: IGameCell) => {
       return "tracker.png";
     case ItemType.AnimalTrack:
       return "track.png";
+    case ItemType.Truck:
+      return "truck.png";
   }
   return "";
 };

@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ItemType, MessageAction } from "./Types/Items/Item";
 import { store } from "./state";
-import { pause, placeItem, selectItem, sendMessage } from "./gameReducer";
+import { placeItem, selectItem, sendMessage, setView } from "./gameReducer";
+import { View } from "./Types/View";
 
 export interface tutorialSlice {
   tutorialIndex: 0;
@@ -99,7 +100,6 @@ export const tutorialSteps = [
 
     if (store.getState().game.cells[index].item.isVisible) {
       store.dispatch(selectItem(store.getState().game.selectedItemUID));
-      store.dispatch(pause());
       store.dispatch(
         sendMessage({
           from: "The Custodian",
@@ -118,6 +118,32 @@ export const tutorialSteps = [
 
       return true;
     }
+  },
+
+  () => {
+    if (store.getState().game.activeMissions.length === 0) {
+      return false;
+    }
+    store.dispatch(setView(View.Map));
+
+    store.dispatch(
+      sendMessage({
+        from: "The Custodian",
+        message: `I've noticed Lysandra dispatching a game vehicle in your direction. I trust you've made a wise decision regarding that Tusk individual. Word around here is that he's more of a storm than a breeze.`,
+        action: [
+          {
+            friendlyName:
+              "Thanks for the heads up. I'll keep a close eye on the situation.",
+            action: MessageAction.Dismiss,
+          },
+        ],
+        isRead: false,
+        isSelected: false,
+        highlight: true,
+      })
+    );
+
+    return true;
   },
 ];
 const initialState: tutorialSlice = {

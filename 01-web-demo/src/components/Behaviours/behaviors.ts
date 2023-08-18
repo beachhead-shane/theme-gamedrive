@@ -14,6 +14,7 @@ import { headHomeBehaviour } from "./head-home-behaviour";
 import { fatiguedBehaviour } from "./fatigued-behaviour";
 import { destroyAtMoraleBehaviour } from "./destroy-at-morale-behavior";
 import { praceTrackerBehaviour } from "./place-tracker-behaviour";
+import { driveToPredatorBehaviour } from "./drive-to-predator-behaviour";
 
 export const behaviors = {
   None: (item: IGameCell, board: Array<IGameCell>) => {
@@ -98,7 +99,11 @@ export const behaviors = {
       return behaviourManager.run(tracker, board, timeOfDay);
     }
   },
-  Truck: (item: IGameCell, board: Array<IGameCell>) => {
-    return board;
+  Truck: (item: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
+    const behaviourManager: BehaviourManager = new BehaviourManager([
+      ageBehaviour,
+      driveToPredatorBehaviour,
+    ]);
+    return behaviourManager.run(item, board, timeOfDay);
   },
 };
