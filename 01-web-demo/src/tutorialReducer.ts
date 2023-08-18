@@ -22,13 +22,16 @@ export const tutorialSteps = [
             action: MessageAction.EnableMap,
           },
         ],
+        isRead: false,
+        isSelected: false,
+        highlight: true,
       })
     );
 
     return true;
   },
   () => {
-    if (!store.getState().game.features.map) {
+    if (!store.getState().game.features?.map) {
       return false;
     }
     store.dispatch(
@@ -41,6 +44,9 @@ export const tutorialSteps = [
             action: MessageAction.Dismiss,
           },
         ],
+        isRead: false,
+        isSelected: false,
+        highlight: true,
       })
     );
 
@@ -74,6 +80,9 @@ export const tutorialSteps = [
             action: MessageAction.Dismiss,
           },
         ],
+        isRead: false,
+        isSelected: false,
+        highlight: true,
       })
     );
 
@@ -101,6 +110,9 @@ export const tutorialSteps = [
               action: MessageAction.EnableRelationships,
             },
           ],
+          isRead: false,
+          isSelected: false,
+          highlight: true,
         })
       );
 

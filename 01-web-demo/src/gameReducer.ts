@@ -52,7 +52,16 @@ const slice = createSlice({
   initialState,
   reducers: {
     sendMessage(state, action: PayloadAction<IMessage>) {
-      state.messages.push(action.payload);
+      state.messages.unshift(action.payload);
+    },
+    selectMessage(state, action: PayloadAction<number>) {
+      state.messages.forEach((msg, index) => {
+        const isMatch = index === action.payload;
+        msg.isSelected = isMatch;
+        if (isMatch) {
+          msg.isRead = true;
+        }
+      });
     },
     loadSaveForGameSlice(state) {
       if (localStorage.getItem("board_state")) {
@@ -61,7 +70,8 @@ const slice = createSlice({
         ];
 
         state.cells = stateFromDisk.cells;
-        state.features = stateFromDisk.feautures;
+        state.features = stateFromDisk.features || {};
+
         state.messages = stateFromDisk.messages;
         state.selectedItemUID = stateFromDisk.selectedItemUID;
         state.time = stateFromDisk.time;
@@ -151,6 +161,7 @@ const slice = createSlice({
     ) {
       switch (action.payload.messageAction) {
         case MessageAction.EnableMap:
+          console.log("enabling map!");
           state.view = View.Map;
           state.features.map = true;
           break;
@@ -232,6 +243,7 @@ const slice = createSlice({
 
 export const {
   pause,
+
   loadMap,
   loadItems,
   processBoard,
@@ -244,5 +256,6 @@ export const {
   placeItem,
   setView,
   loadSaveForGameSlice,
+  selectMessage,
 } = slice.actions;
 export default slice.reducer;

@@ -41,11 +41,16 @@ export const behaviors = {
   Lodge: (item: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
     if (item.item.activeAction === Action.DeployTrackerFromLodge) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
+        ageBehaviour,
         praceTrackerBehaviour,
       ]);
       return behaviourManager.run(item, board, timeOfDay);
+    } else {
+      const behaviourManager: BehaviourManager = new BehaviourManager([
+        ageBehaviour,
+      ]);
+      return behaviourManager.run(item, board, timeOfDay);
     }
-    return board;
   },
   AnimalTrack: (
     item: IGameCell,
@@ -77,6 +82,7 @@ export const behaviors = {
 
     if (tracker.item.activeAction === Action.LookOut) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
+        ageBehaviour,
         fleeBehaviour,
         destroyAtMoraleBehaviour,
       ]);
@@ -86,6 +92,7 @@ export const behaviors = {
     if (tracker.item.activeAction === Action.HeadHome) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
         fleeBehaviour,
+        ageBehaviour,
         headHomeBehaviour,
       ]);
       return behaviourManager.run(tracker, board, timeOfDay);

@@ -23,6 +23,9 @@ class Cell extends LitElement {
   @property({ type: Boolean })
   itemVisible: boolean;
 
+  @property({ type: Number })
+  age: number = 0;
+
   @state()
   isSelected: boolean;
 
@@ -36,7 +39,6 @@ class Cell extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.unsubscribe = store.subscribe(this.onStateUpdate.bind(this));
-
     this.onStateUpdate();
   }
 
@@ -51,7 +53,14 @@ class Cell extends LitElement {
       margin: 0;
       padding: 0;
     }
-
+    @keyframes animatedBackground {
+      from {
+        background-position: 0 0;
+      }
+      to {
+        background-position: 100% 0;
+      }
+    }
     .cell {
       display: table-cell;
       min-width: 50px;
@@ -67,6 +76,7 @@ class Cell extends LitElement {
       background-repeat: no-repeat;
       background-size: auto;
       background-position: center;
+      background-size: 30px 30px;
     }
     .selected {
       border: 5px solid black;
@@ -92,7 +102,6 @@ class Cell extends LitElement {
     }
     .color-overlay {
       filter: sepia(100%) saturate(200%) hue-rotate(121deg);
-
       display: table-cell;
       min-width: 50px;
       height: 50px;
@@ -108,6 +117,23 @@ class Cell extends LitElement {
       background-size: auto;
       background-position: center;
       mix-blend-mode: multiply;
+    }
+    @keyframes animatedBackground {
+      0% {
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+
+      70% {
+        background-color: 0 0 0 10px rgba(255, 255, 255, 0);
+      }
+
+      100% {
+        background-color: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+
+    .background-animate {
+      animation: animatedBackground 0.5s linear;
     }
   `;
   lerp = (a: number, b: number, alpha: number) => {
@@ -157,7 +183,9 @@ class Cell extends LitElement {
   ];
   render() {
     return html`<div
-      class="cell ${this.tileType}  ${this.isSelected ? "selected" : ""}"
+      class="${this.itemVisible && this.age <= 1
+        ? "background-animate"
+        : ""} cell ${this.tileType}  ${this.isSelected ? "selected" : ""}"
       id="game-cell-${this.x}-${this.y}"
       style="${this.itemVisible
         ? `background-image:url('icons/${this.iconSrc}'`
@@ -165,7 +193,9 @@ class Cell extends LitElement {
       @click="${this.onCellClick}"
     >
       <div
-        class="color-overlay ${this.tileType}  ${this.isSelected
+        class=" ${this.itemVisible && this.age <= 1
+          ? "background-animate"
+          : ""} color-overlay ${this.tileType}  ${this.isSelected
           ? "selected-inner"
           : ""}"
         style="${this.itemVisible

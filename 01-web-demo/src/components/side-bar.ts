@@ -5,6 +5,7 @@ import { store } from "../state";
 import {
   processBoard,
   processMessageAction,
+  selectMessage,
   setAction,
   togglePlay,
 } from "../gameReducer";
@@ -18,6 +19,24 @@ class SideBar extends LitElement {
   }
 
   static styles = css`
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #caa000;
+    }
     .container {
       width: 200px;
       height: 525px;
@@ -67,12 +86,17 @@ class SideBar extends LitElement {
       text-align: left;
       user-select: none;
       line-break: pre;
+      cursor: pointer;
     }
 
     .expand {
       text-overflow: initial;
       white-space: pre-line;
-      overflow: visible;
+      text-overflow: initial;
+      white-space: pre-line;
+      overflow-y: scroll;
+      max-height: 150px !important;
+      cursor: initial;
     }
 
     .message-action {
@@ -80,6 +104,46 @@ class SideBar extends LitElement {
       font-weight: bold;
       text-align: center;
       padding: 3px;
+      cursor: pointer;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      }
+    }
+
+    @keyframes pulse-no-shadow {
+      0% {
+        transform: scale(1.05);
+      }
+
+      70% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(1.05);
+      }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    .pulse-no-shadow {
+      animation: pulse-no-shadow 2s infinite;
     }
   `;
   advance() {
@@ -97,9 +161,6 @@ class SideBar extends LitElement {
   @state()
   messages: Array<IMessage>;
 
-  @state()
-  selectedMessageIndex = -1;
-
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -111,9 +172,7 @@ class SideBar extends LitElement {
     this.time = store.getState().game.time;
     this.timerId = store.getState().game.timerId;
     this.messages = store.getState().game.messages;
-    if (this.messages.length === 0) {
-      this.selectedMessageIndex = -1;
-    }
+
     const activeCell = store.getState().game.selectedItemUID;
     if (activeCell) {
       this.activeCell = store
@@ -132,8 +191,7 @@ class SideBar extends LitElement {
     store.dispatch(setAction({ cell, action, momentary }));
   }
   onMessageClick(index: number) {
-    this.selectedMessageIndex = index;
-
+    store.dispatch(selectMessage(index));
     //turn this on for pacing videos.
     /*const utterThis = new SpeechSynthesisUtterance(
       this.messages[index].message
@@ -154,16 +212,20 @@ class SideBar extends LitElement {
               @click=${() => {
                 this.onMessageClick(index);
               }}
-              class="message ${this.selectedMessageIndex === index
+              class="message ${message.isSelected
                 ? "expand"
-                : ""}"
+                : message.isRead
+                ? ""
+                : "pulse"}"
             >
               <b>${message.from}:</b> ${message.message}
-              ${this.selectedMessageIndex === index
+              ${message.isSelected
                 ? message.action.map(
                     (act) => html`
                       <div
-                        class="message-action"
+                        class="message-action ${message.highlight
+                          ? "pulse-no-shadow"
+                          : ""}"
                         @click=${() => {
                           store.dispatch(
                             processMessageAction({

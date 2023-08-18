@@ -107,6 +107,7 @@ class App extends LitElement {
             iconSrc=${getIconFromCell(cell)}
             ?itemVisible="${cell.item.isVisible}"
             itemUID="${cell.item.uid}"
+            age=${cell.item.age}
           ></game-cell>
         `
       )}`;
