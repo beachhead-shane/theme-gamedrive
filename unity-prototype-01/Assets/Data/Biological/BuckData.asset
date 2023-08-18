@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ceb460336be4465808efedf8b3cf4a, type: 3}
+  m_Name: BuckData
+  m_EditorClassIdentifier: 
+  BiologicalType: 2
+  BiologicalStats:
+  - StatType: 0
+    CurrentValue: 100
+    MaxValue: 100
+  - StatType: 1
+    CurrentValue: 400
+    MaxValue: 400
+  - StatType: 4
+    CurrentValue: 0
+    MaxValue: 200
+  - StatType: 5
+    CurrentValue: 0
+    MaxValue: 100
