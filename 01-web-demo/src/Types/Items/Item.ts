@@ -57,6 +57,7 @@ export interface Item {
   uid: string;
   itemType: ItemType;
   isVisible: boolean;
+  isHighlighted: boolean;
   class: Class;
   order: Order;
   sleepingMode: SleepingMode;
