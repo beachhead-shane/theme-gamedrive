@@ -5,10 +5,13 @@ namespace UnhappyMeatFactory
 	{
 		public SupplyChainNode Parent;
 
-		//TODO make a list for multiple leaf nodes
-		public SupplyChainNode Child;
+		public List<SupplyChainNode> Children = new List<SupplyChainNode>();
 
-		public Factory Factory;
+		public SupplyChainNode ActiveChild => Children[activeSupplyChainChildIndex];
+
+        public Factory Factory;
+
+		private int activeSupplyChainChildIndex = 0;
 
 		public SupplyChainNode(Factory f, SupplyChainNode parent )
 		{
@@ -16,39 +19,25 @@ namespace UnhappyMeatFactory
 			Parent = parent;
 			if (parent != null)
 			{
-				parent.Child = this;
+				parent.Children.Add(this);
 			}
 		}
 
-		public List<Resource> ProcessSupplyChain(List<Resource> inputs)
+		public void BuildSupplyPath( ref List<Factory> foundFactories)
 		{
-
-			if (Parent == null)
+			foundFactories.Add(this.Factory);
+			if (Children.Count > 0)
 			{
-				Factory.Consume(inputs);
-				inputs = Factory.Produce();
-				if (Child == null)
-				{
-					return inputs;
-				}
-                return Child.ProcessSupplyChain(inputs);
+                ActiveChild.BuildSupplyPath(ref foundFactories);
+				ShuffleActiveChild();
+
             }
-			else
-			{
-				if (Child== null)
-				{
-                    Factory.Consume(inputs);
-                    inputs = Factory.Produce();
-					return inputs;
-                }
-				return Child.ProcessSupplyChain(inputs);
-			}
-
-
 		}
 
+		private void ShuffleActiveChild()
+		{
+			activeSupplyChainChildIndex = (activeSupplyChainChildIndex + 1) % Children.Count;
 
-
-
+        }
 	}
 }
