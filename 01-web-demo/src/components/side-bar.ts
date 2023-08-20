@@ -62,6 +62,7 @@ class SideBar extends LitElement {
       margin: 5px;
       padding: 5px;
       border-radius: 3px;
+      cursor: pointer;
     }
     .heading {
       font-weight: bold;
@@ -96,6 +97,8 @@ class SideBar extends LitElement {
       white-space: pre-line;
       max-height: 250px !important;
       cursor: initial;
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
     }
 
     .message-action {
@@ -105,6 +108,7 @@ class SideBar extends LitElement {
       padding: 3px;
       cursor: pointer;
       white-space: initial;
+      font-size: 10px;
     }
 
     @keyframes pulse {

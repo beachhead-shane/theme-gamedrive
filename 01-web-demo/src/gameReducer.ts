@@ -196,6 +196,9 @@ const slice = createSlice({
         state.view = stateFromDisk.view;
       }
     },
+    clearSelectedItem(state) {
+      state.selectedItemUID = null;
+    },
     togglePlay(state) {
       if (state.timerId === 0) {
         state.timerId = window.setInterval(() => {
@@ -274,10 +277,15 @@ const slice = createSlice({
 
       completedMissions.forEach((mission) => {
         if (mission.missionAction.missionType === MissionType.EndGame) {
-          state.modal.buttonMessage = "Replay";
+          state.modal.buttonMessage = "Ok";
           state.modal.visible = true;
-          state.modal.message =
-            "Thank you for taking the time to try out our prototype. We're excited about our vision for this game, which involves a rich blend of wildlife conservation, lodge management, and community interactions. The core gameplay is all about making impactful decisions that will shape your lodge's reputation, your finances, and even the natural world you're a part of. We appreciate your interest and can't wait to share more developments with you";
+          state.modal.message = `Thank you for taking the time to try out our prototype. We're excited about our vision for this game, which involves a rich blend of wildlife conservation, lodge management, and community interactions.
+
+            The core gameplay is all about making impactful decisions that will shape your lodge's reputation, your finances, and even the natural world you're a part of.
+
+            We appreciate your interest and can't wait to share more developments with you.
+
+            Click "Replay" on the bottom left to play through again.`;
         }
         console.log("mission complete!", mission);
         state.bankBalance += 100 * mission.missionAction.rewardMultiplier;
@@ -476,5 +484,6 @@ export const {
   processMissions,
   highlightItem,
   unhighlightItem,
+  clearSelectedItem,
 } = slice.actions;
 export default slice.reducer;

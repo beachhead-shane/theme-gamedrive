@@ -59,6 +59,7 @@ class BottomBar extends LitElement {
       margin: 5px;
       padding: 5px;
       border-radius: 3px;
+      cursor: pointer;
     }
 
     .flash-number-down {

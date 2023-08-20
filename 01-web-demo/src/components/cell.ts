@@ -1,7 +1,7 @@
 import { css, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { store } from "../state";
-import { selectItem, unhighlightItem } from "../gameReducer";
+import { clearSelectedItem, selectItem, unhighlightItem } from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
 import { Feature, HasFeature, ItemType } from "../Types/Items/Item";
 import { getIconFromCell } from "../Types/IGameCell";
@@ -130,6 +130,9 @@ class Cell extends LitElement {
       background-position: center;
       mix-blend-mode: multiply;
     }
+    .cursor {
+      cursor: pointer;
+    }
     @keyframes pulse-no-shadow {
       0% {
         transform: scale(1.05);
@@ -149,6 +152,7 @@ class Cell extends LitElement {
     }
     .is-highlighted {
       animation: pulse-no-shadow 2s infinite;
+      cursor: pointer;
     }
     @keyframes animatedBackground {
       0% {
@@ -184,6 +188,8 @@ class Cell extends LitElement {
         )
       );
       store.dispatch(unhighlightItem({ x: this.x, y: this.y }));
+    } else {
+      store.dispatch(clearSelectedItem());
     }
   }
 

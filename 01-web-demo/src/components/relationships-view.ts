@@ -31,6 +31,9 @@ class RelationshipsView extends LitElement {
     }
     div {
     }
+    button {
+      cursor: pointer;
+    }
     .container {
       width: 100%;
       height: 100%;

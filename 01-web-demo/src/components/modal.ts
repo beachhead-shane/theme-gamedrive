@@ -31,12 +31,14 @@ class Modal extends LitElement {
       border: solid 1px black;
       border-radius: 10px;
       font-size: 12px;
+      white-space: pre-line;
     }
     button {
       width: 150px;
       margin: 5px;
       padding: 5px;
       border-radius: 3px;
+      white-space: initial;
     }
   `;
   @state()
