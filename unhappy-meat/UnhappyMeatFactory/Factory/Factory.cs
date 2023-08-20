@@ -5,7 +5,7 @@ namespace UnhappyMeatFactory
     {
         protected List<IFactoryBehaviour> Behaviours = new List<IFactoryBehaviour>();
 
-         Queue<Resource> Resources = new Queue<Resource>();
+        public List<Resource> Resources = new List<Resource> ();
 
         public Factory()
         {
@@ -23,20 +23,13 @@ namespace UnhappyMeatFactory
 
         public void Consume(List<Resource> inputs)
         {
-            inputs.ForEach(x => { Resources.Enqueue(x); });
+            Resources.AddRange(inputs);
         }
 
         public List<Resource> Produce()
         {
+            List<Resource> inputs = Resources;
 
-            Resource r = new Resource(ResourceType.None, 0, Class.InOrganic);
-            List<Resource> inputs = new List<Resource>() {  };
-
-            if (Resources.Count > 0)
-            {
-                r = Resources.Dequeue();
-            }
-            inputs.Add(r);
             foreach (var b in Behaviours)
             {
                 inputs = b.Run(inputs);
