@@ -5,13 +5,14 @@ namespace UnhappyMeatFactory
 {
 	public class MakeFlourFromWheat :FactoryBehaviour, IFactoryBehaviour
 	{
-        protected override bool CanManufacture(List<Resource> listOfInputs)
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
             return BehaviourHelper.HasInput(listOfInputs, ResourceType.Wheat);
         }
 
         protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
             aspects.Remove(AspectType.Plant);
             aspects.Add(AspectType.CookingIngredient, 1);
@@ -20,6 +21,7 @@ namespace UnhappyMeatFactory
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
             if (CanManufacture(listOfInputs))

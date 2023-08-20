@@ -5,13 +5,14 @@ namespace UnhappyMeatFactory
 {
     public class CollectRainWater :FactoryBehaviour, IFactoryBehaviour
     {
-        protected override bool CanManufacture(List<Resource> listOfInputs)
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
             return true;
         }
 
         protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
 
             return new List<Resource>() { new Resource(ResourceType.Water, aspects) };
@@ -19,6 +20,7 @@ namespace UnhappyMeatFactory
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
             if (CanManufacture(listOfInputs))

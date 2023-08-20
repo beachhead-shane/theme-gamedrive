@@ -5,7 +5,7 @@ namespace UnhappyMeatFactory
 {
 	public class MakeBurgerFromMeatAndBread : FactoryBehaviour, IFactoryBehaviour
 	{
-        protected override bool CanManufacture(List<Resource> listOfInputs)
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
             bool result = BehaviourHelper.HasInput(listOfInputs, ResourceType.Meat) && BehaviourHelper.HasInput(listOfInputs, ResourceType.Bread);
             return result;
@@ -13,6 +13,7 @@ namespace UnhappyMeatFactory
 
         protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
             aspects.Add(AspectType.Food, 100);
             aspects.Remove(AspectType.CookingIngredient);
@@ -40,6 +41,7 @@ namespace UnhappyMeatFactory
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
             if (CanManufacture(listOfInputs))

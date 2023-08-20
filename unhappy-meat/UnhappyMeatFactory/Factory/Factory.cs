@@ -5,11 +5,19 @@ namespace UnhappyMeatFactory
     {
         protected List<IFactoryBehaviour> Behaviours = new List<IFactoryBehaviour>();
 
-        public List<Resource> Resources = new List<Resource> ();
+        public List<Resource> InputPile = new List<Resource> ();
+        public List<Resource> OutPile = new List<Resource>();
+
+        public string Name;
 
         public Factory()
         {
+            Name = "Factory";
+        }
 
+        public Factory(string name)
+        {
+            Name = name;
         }
 
         public void AddBehaviour(IFactoryBehaviour behaviour)
@@ -23,20 +31,32 @@ namespace UnhappyMeatFactory
 
         public void Consume(List<Resource> inputs)
         {
-            Resources.AddRange(inputs);
+            InputPile.AddRange(inputs);
         }
 
-        public List<Resource> Produce()
+        public bool CanProduce()
         {
-            List<Resource> inputs = Resources;
+            foreach (var b in Behaviours)
+            {
+                if (b.CanManufacture(InputPile))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Produce()
+        {
+            List<Resource> inputs = InputPile;
 
             foreach (var b in Behaviours)
             {
                 inputs = b.Run(inputs);
             }
 
-            return inputs;
-
+            OutPile.AddRange(inputs);
         }
     }
 }
