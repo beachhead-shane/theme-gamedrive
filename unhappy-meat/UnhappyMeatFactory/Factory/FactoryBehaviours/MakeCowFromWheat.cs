@@ -3,26 +3,28 @@ using UnhappyMeatFactory;
 
 namespace UnhappyMeatFactory
 {
-	public class MakeFlourFromWheat : IFactoryBehaviour
+	public class MakeCowFromWheat :FactoryBehaviour, IFactoryBehaviour
 	{
-        public bool HasCorrectInputs(List<Resource> listOfInputs)
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
             return BehaviourHelper.HasInput(listOfInputs, ResourceType.Wheat);
         }
 
-        public List<Resource> Manufacture(List<Resource> selectedInputs)
+        protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
+            aspects.Add(AspectType.Animal, 1);
             aspects.Remove(AspectType.Plant);
-            aspects.Add(AspectType.CookingIngredient, 1);
-            return new List<Resource>() { new Resource(ResourceType.Flour, aspects) };
+            return new List<Resource>() { new Resource(ResourceType.Cow, aspects) };
         }
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
-            if (HasCorrectInputs(listOfInputs))
+            if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
                 Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Wheat);

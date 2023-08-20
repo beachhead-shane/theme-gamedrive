@@ -3,29 +3,30 @@ using UnhappyMeatFactory;
 
 namespace UnhappyMeatFactory
 {
-	public class ButcherHumanMeatBehaviour : IFactoryBehaviour
+	public class ButcherCowMeatBehaviour: FactoryBehaviour, IFactoryBehaviour
 	{
-        public bool HasCorrectInputs(List<Resource> listOfInputs)
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
             return BehaviourHelper.HasInput(listOfInputs, ResourceType.Cow);
         }
 
-        public List<Resource> Manufacture(List<Resource> selectedInputs)
+        protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
-            aspects.Add(AspectType.Corruption, 100);
 
             return new List<Resource>() { new Resource(ResourceType.Meat, aspects) };
         }
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
-            if (HasCorrectInputs(listOfInputs))
+            if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
-                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Human);
+                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Cow);
                 selectedInputs.Add(resource);
                 listOfInputs.Remove(resource);
                 outputs.AddRange(Manufacture(selectedInputs));

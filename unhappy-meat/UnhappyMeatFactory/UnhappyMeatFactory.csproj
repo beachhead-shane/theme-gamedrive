@@ -8,12 +8,12 @@
 
   <ItemGroup>
     <None Remove="Factory\" />
-    <None Remove="Behaviours\" />
     <None Remove="Resources\" />
+    <None Remove="Factory\FactoryBehaviours\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Factory\" />
-    <Folder Include="Behaviours\" />
     <Folder Include="Resources\" />
+    <Folder Include="Factory\FactoryBehaviours\" />
   </ItemGroup>
 </Project>

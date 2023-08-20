@@ -3,30 +3,31 @@ using UnhappyMeatFactory;
 
 namespace UnhappyMeatFactory
 {
-	public class MakeBreadFromFlour : IFactoryBehaviour
-	{
-        public bool HasCorrectInputs(List<Resource> listOfInputs)
+	public class ButcherHumanMeatBehaviour : FactoryBehaviour, IFactoryBehaviour
+    {
+        public bool CanManufacture(List<Resource> listOfInputs)
         {
-            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Flour);
+            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Cow);
         }
 
-        public List<Resource> Manufacture(List<Resource> selectedInputs)
+        protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Manufacturing");
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
-            aspects.Add(AspectType.Food, 20);
-            aspects.Remove(AspectType.CookingIngredient);
+            aspects.Add(AspectType.Corruption, 100);
 
-            return new List<Resource>() { new Resource(ResourceType.Bread, aspects) };
+            return new List<Resource>() { new Resource(ResourceType.Meat, aspects) };
         }
 
         public List<Resource> Run(List<Resource> listOfInputs)
         {
+            Console.WriteLine($"[{this.GetType()}] Running");
             List<Resource> outputs = new List<Resource>();
 
-            if (HasCorrectInputs(listOfInputs))
+            if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
-                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Flour);
+                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Human);
                 selectedInputs.Add(resource);
                 listOfInputs.Remove(resource);
                 outputs.AddRange(Manufacture(selectedInputs));

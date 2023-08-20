@@ -1,19 +1,19 @@
 ﻿using System;
 namespace UnhappyMeatFactory
 {
-	public class SupplyChainNode
+	public class SupplyChainNodePush
 	{
-		public SupplyChainNode Parent;
+		public SupplyChainNodePush Parent;
 
-		public List<SupplyChainNode> Children = new List<SupplyChainNode>();
+		public List<SupplyChainNodePush> Children = new List<SupplyChainNodePush>();
 
-		public SupplyChainNode ActiveChild => Children[activeSupplyChainChildIndex];
+		public SupplyChainNodePush ActiveChild => Children[activeSupplyChainChildIndex];
 
         public Factory Factory;
 
 		private int activeSupplyChainChildIndex = 0;
 
-		public SupplyChainNode(Factory f, SupplyChainNode parent )
+		public SupplyChainNodePush(Factory f, SupplyChainNodePush parent )
 		{
 			Factory = f;
 			Parent = parent;

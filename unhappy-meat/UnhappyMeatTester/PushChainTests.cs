@@ -2,7 +2,7 @@
 
 namespace UnhappyMeatTester;
 
-public class Tests
+public class PushChainTests
 {
     [SetUp]
     public void Setup()
@@ -13,24 +13,24 @@ public class Tests
     [Test]
     public void ShouldReturnMeatGivenACow()
     {
-      /* Factory farm = new Factory();
-        farm.Consume(new List<Resource>() { new Resource(ResourceType.Cow, 0, Class.Animal) });
-        farm.Consume(new List<Resource>() { new Resource(ResourceType.Human, 10, Class.Person) });
+        /* Factory farm = new Factory();
+          farm.Consume(new List<Resource>() { new Resource(ResourceType.Cow, 0, Class.Animal) });
+          farm.Consume(new List<Resource>() { new Resource(ResourceType.Human, 10, Class.Person) });
 
-        Factory butcher = new Factory();
-        butcher.AddBehaviour(new ButcherMeatBehaviour());
-        SupplyChainNode startNode = new SupplyChainNode(farm, null);
-        SupplyChainNode butcheryNode = new SupplyChainNode(butcher, startNode);
-
-
-        List<Resource> result = startNode.ProcessSupplyChain(new List<Resource>());
-        Assert.That(result[0].Type == ResourceType.Meat);
-        Assert.That(result[0].Corruption == 0);
+          Factory butcher = new Factory();
+          butcher.AddBehaviour(new ButcherMeatBehaviour());
+          SupplyChainNode startNode = new SupplyChainNode(farm, null);
+          SupplyChainNode butcheryNode = new SupplyChainNode(butcher, startNode);
 
 
-         result = startNode.ProcessSupplyChain(new List<Resource>());
-        Assert.That(result[0].Type == ResourceType.Meat);
-        Assert.That(result[0].Corruption == 99);*/
+          List<Resource> result = startNode.ProcessSupplyChain(new List<Resource>());
+          Assert.That(result[0].Type == ResourceType.Meat);
+          Assert.That(result[0].Corruption == 0);
+
+
+           result = startNode.ProcessSupplyChain(new List<Resource>());
+          Assert.That(result[0].Type == ResourceType.Meat);
+          Assert.That(result[0].Corruption == 99);*/
     }
 
     [Test]
@@ -48,20 +48,21 @@ public class Tests
         Factory butcher = new Factory();
         butcher.AddBehaviour(new ButcherCowMeatBehaviour());
 
-        SupplyChainNode startNode = new SupplyChainNode(rainWaterCollector, null);
-        SupplyChainNode wheatNode = new SupplyChainNode(wheatFarm, startNode);
-        SupplyChainNode ranchNode = new SupplyChainNode(ranch, wheatNode);
-        SupplyChainNode butcheryNode = new SupplyChainNode(butcher, ranchNode);
+        SupplyChainNodePush startNode = new SupplyChainNodePush(rainWaterCollector, null);
+        SupplyChainNodePush wheatNode = new SupplyChainNodePush(wheatFarm, startNode);
+        SupplyChainNodePush ranchNode = new SupplyChainNodePush(ranch, wheatNode);
+        SupplyChainNodePush butcheryNode = new SupplyChainNodePush(butcher, ranchNode);
 
-        List < Factory > factoryChain = new List<Factory>();
-         startNode.BuildSupplyPath(ref factoryChain);
+        List<Factory> factoryChain = new List<Factory>();
+        startNode.BuildSupplyPath(ref factoryChain);
 
         List<Resource> rescoures = new List<Resource>();
 
-        foreach(Factory f in factoryChain)
+        foreach (Factory f in factoryChain)
         {
             f.Consume(rescoures);
-           rescoures =  f.Produce();
+            f.Produce();
+            rescoures = f.OutPile;
         }
 
         Assert.That(rescoures.Count == 1);
@@ -83,10 +84,10 @@ public class Tests
         Factory butcher = new Factory();
         butcher.AddBehaviour(new ButcherCowMeatBehaviour());
 
-        SupplyChainNode startNode = new SupplyChainNode(rainWaterCollector, null);
-        SupplyChainNode wheatNode = new SupplyChainNode(wheatFarm, startNode);
-        SupplyChainNode ranchNode = new SupplyChainNode(ranch, wheatNode);
-        SupplyChainNode butcheryNode = new SupplyChainNode(butcher, ranchNode);
+        SupplyChainNodePush startNode = new SupplyChainNodePush(rainWaterCollector, null);
+        SupplyChainNodePush wheatNode = new SupplyChainNodePush(wheatFarm, startNode);
+        SupplyChainNodePush ranchNode = new SupplyChainNodePush(ranch, wheatNode);
+        SupplyChainNodePush butcheryNode = new SupplyChainNodePush(butcher, ranchNode);
 
         List<Factory> factoryChain = new List<Factory>();
         startNode.BuildSupplyPath(ref factoryChain);
@@ -96,7 +97,8 @@ public class Tests
         foreach (Factory f in factoryChain)
         {
             f.Consume(rescoures);
-            rescoures = f.Produce();
+            f.Produce();
+            rescoures = f.OutPile;
         }
 
         Assert.That(rescoures.Count == 1);
@@ -119,10 +121,10 @@ public class Tests
         Factory mill = new Factory();
         mill.AddBehaviour(new MakeFlourFromWheat());
 
-        SupplyChainNode startNode = new SupplyChainNode(rainWaterCollector, null);
-        SupplyChainNode wheatNode = new SupplyChainNode(wheatFarm, startNode);
-        SupplyChainNode ranchNode = new SupplyChainNode(ranch, wheatNode);
-        SupplyChainNode millNode = new SupplyChainNode(mill, wheatNode);
+        SupplyChainNodePush startNode = new SupplyChainNodePush(rainWaterCollector, null);
+        SupplyChainNodePush wheatNode = new SupplyChainNodePush(wheatFarm, startNode);
+        SupplyChainNodePush ranchNode = new SupplyChainNodePush(ranch, wheatNode);
+        SupplyChainNodePush millNode = new SupplyChainNodePush(mill, wheatNode);
 
         List<Factory> factoryChain = new List<Factory>();
         startNode.BuildSupplyPath(ref factoryChain);
@@ -132,7 +134,8 @@ public class Tests
         foreach (Factory f in factoryChain)
         {
             f.Consume(rescoures);
-            rescoures = f.Produce();
+            f.Produce();
+            rescoures = f.OutPile;
         }
 
         Console.WriteLine(rescoures[0].Type);
@@ -146,7 +149,8 @@ public class Tests
         foreach (Factory f in factoryChain)
         {
             f.Consume(rescoures);
-            rescoures = f.Produce();
+            f.Produce();
+            rescoures = f.OutPile;
         }
 
         Console.WriteLine(rescoures[0].Type);
@@ -159,7 +163,8 @@ public class Tests
         foreach (Factory f in factoryChain)
         {
             f.Consume(rescoures);
-            rescoures = f.Produce();
+            f.Produce();
+            rescoures = f.OutPile;
         }
 
         Console.WriteLine(rescoures[0].Type);
@@ -182,10 +187,10 @@ public class Tests
         Factory kitchen = new Factory();
         kitchen.AddBehaviour(new MakeBurgerFromMeatAndBread());
 
-        SupplyChainNode meatNode = new SupplyChainNode(buchery, null);
-        SupplyChainNode breadNode = new SupplyChainNode(bakery, null);
-        SupplyChainNode kitchenNode1 = new SupplyChainNode(kitchen, meatNode);
-        SupplyChainNode kitchenNode2 = new SupplyChainNode(kitchen, breadNode);
+        SupplyChainNodePush meatNode = new SupplyChainNodePush(buchery, null);
+        SupplyChainNodePush breadNode = new SupplyChainNodePush(bakery, null);
+        SupplyChainNodePush kitchenNode1 = new SupplyChainNodePush(kitchen, meatNode);
+        SupplyChainNodePush kitchenNode2 = new SupplyChainNodePush(kitchen, breadNode);
 
         List<Factory> meatChain = new List<Factory>();
         meatNode.BuildSupplyPath(ref meatChain);
@@ -195,33 +200,33 @@ public class Tests
         foreach (Factory f in meatChain)
         {
             f.Consume(resources);
-            resources = f.Produce();
+            f.Produce();
+            resources = f.OutPile;
         }
 
         Console.WriteLine($"Resources after meat chain ({resources.Count}) ({resources[0]})");
-        Console.WriteLine($"Resources in kitchen ({kitchen.Resources.Count}) ({kitchen.Resources[0]})");
+        Console.WriteLine($"Resources in kitchen ({kitchen.InputPile.Count}) ({kitchen.InputPile[0]})");
         Assert.That(resources.Count == 1);
         Assert.That(resources[0].Type == ResourceType.None);
-        Assert.That(kitchen.Resources[0].Type == ResourceType.Meat);
+        Assert.That(kitchen.InputPile[0].Type == ResourceType.Meat);
 
         List<Factory> breadChain = new List<Factory>();
         breadNode.BuildSupplyPath(ref breadChain);
         resources = new List<Resource>();
 
-        
+
 
         foreach (Factory f in breadChain)
         {
             f.Consume(resources);
-            resources = f.Produce();
+            f.Produce();
+            resources = f.OutPile;
         }
 
         Console.WriteLine($"Resources after bread chain ({resources.Count}) ({resources[0]})");
-        Console.WriteLine($"Resources in kitchen ({kitchen.Resources.Count}");
+        Console.WriteLine($"Resources in kitchen ({kitchen.InputPile.Count}");
         Assert.That(resources.Count == 1);
         Assert.That(resources[0].Type == ResourceType.Burger);
         //Assert.That(rescoures[0].Corruption == 99);
-
-
     }
 }
