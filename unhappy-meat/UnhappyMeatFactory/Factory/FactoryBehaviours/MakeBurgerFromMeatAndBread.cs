@@ -3,15 +3,15 @@ using UnhappyMeatFactory;
 
 namespace UnhappyMeatFactory
 {
-	public class MakeBurgerFromMeatAndBread : IFactoryBehaviour
+	public class MakeBurgerFromMeatAndBread : FactoryBehaviour, IFactoryBehaviour
 	{
-        public bool HasCorrectInputs(List<Resource> listOfInputs)
+        protected override bool CanManufacture(List<Resource> listOfInputs)
         {
             bool result = BehaviourHelper.HasInput(listOfInputs, ResourceType.Meat) && BehaviourHelper.HasInput(listOfInputs, ResourceType.Bread);
             return result;
         }
 
-        public List<Resource> Manufacture(List<Resource> selectedInputs)
+        protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
             Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
             aspects.Add(AspectType.Food, 100);
@@ -42,7 +42,7 @@ namespace UnhappyMeatFactory
         {
             List<Resource> outputs = new List<Resource>();
 
-            if (HasCorrectInputs(listOfInputs))
+            if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
 

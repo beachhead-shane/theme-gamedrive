@@ -3,14 +3,14 @@ using UnhappyMeatFactory;
 
 namespace UnhappyMeatFactory
 {
-	public class MakeCowFromNothingBehaviour: IFactoryBehaviour
+	public class MakeCowFromNothingBehaviour:FactoryBehaviour, IFactoryBehaviour
 	{
-        public bool HasCorrectInputs(List<Resource> listOfInputs)
+        protected override bool CanManufacture(List<Resource> listOfInputs)
         {
             return true;
         }
 
-        public List<Resource> Manufacture(List<Resource> selectedInputs)
+        protected override List<Resource> Manufacture(List<Resource> selectedInputs)
         {
             Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
             aspects.Add(AspectType.Animal, 1);
@@ -22,7 +22,7 @@ namespace UnhappyMeatFactory
         {
             List<Resource> outputs = new List<Resource>();
 
-            if (HasCorrectInputs(listOfInputs))
+            if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
                 Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.None);
