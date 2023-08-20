@@ -94,8 +94,7 @@ class SideBar extends LitElement {
       white-space: pre-line;
       text-overflow: initial;
       white-space: pre-line;
-      overflow-y: scroll;
-      max-height: 200px !important;
+      max-height: 250px !important;
       cursor: initial;
     }
 

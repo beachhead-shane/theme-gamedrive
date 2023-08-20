@@ -19,7 +19,9 @@ class RelationshipsView extends LitElement {
   characters: Array<ICharacter> = [];
 
   onStateUpdate() {
-    this.characters = store.getState().game.characters;
+    this.characters = store
+      .getState()
+      .game.characters.filter((x) => x.showRelationship);
   }
 
   static styles = css`
@@ -86,19 +88,23 @@ class RelationshipsView extends LitElement {
     }
 
     .question {
-      padding: 10px;
-      font-size: 14px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 10px;
+      font-size: 10px;
       line-height: auto;
-      margin-bottom: 25px;
+      white-space: pre-line;
     }
     .option {
-      margin: 5px;
+      margin-bottom: 10px;
+      margin-left: 10px;
 
-      margin-top: 15px;
       border-radius: 5px;
       padding: 5px;
-      font-size: 12px;
+      font-size: 10px;
       text-align: left;
+      width: 180px;
+      text-align: center;
     }
 
     .no-details {
@@ -145,30 +151,28 @@ class RelationshipsView extends LitElement {
 
               ${character.actions.map(
                 (action, actionIndex) => html`
-                  <div class="question">
-                    ${action.question}
-                    ${action.options.map(
-                      (option, optionIndex) => html`
-                        <button
-                          class="option"
-                          @click=${() => {
-                            this.optionClick(
-                              actionIndex,
-                              optionIndex,
-                              character.name
-                            );
-                          }}
-                        >
-                          ${option.response}<br />
-                          <br />
-                          <small class="option-details"
-                            >risk: ${option.riskProfile}, reward:
-                            x${option.missionAction.rewardMultiplier}
-                          </small>
-                        </button>
-                      `
-                    )}
-                  </div>
+                  <div class="question">${action.question}</div>
+                  ${action.options.map(
+                    (option, optionIndex) => html`
+                      <button
+                        class="option"
+                        @click=${() => {
+                          this.optionClick(
+                            actionIndex,
+                            optionIndex,
+                            character.name
+                          );
+                        }}
+                      >
+                        ${option.response}<br />
+
+                        <small class="option-details"
+                          >risk: ${option.riskProfile}, reward:
+                          x${option.missionAction.rewardMultiplier}
+                        </small>
+                      </button>
+                    `
+                  )}
                 `
               )}
             </div>`

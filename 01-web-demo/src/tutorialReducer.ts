@@ -7,6 +7,7 @@ import {
 } from "./Types/Items/Item";
 import { store } from "./state";
 import {
+  addCharacterAction,
   highlightItem,
   placeItem,
   selectItem,
@@ -14,7 +15,7 @@ import {
   setView,
 } from "./gameReducer";
 import { View } from "./Types/View";
-import { Character } from "./Types/Characters/ICharacter";
+import { Character, MissionType } from "./Types/Characters/ICharacter";
 
 export interface tutorialSlice {
   tutorialIndex: 0;
@@ -27,7 +28,7 @@ export const tutorialSteps = [
       sendMessage({
         character: Character.JamesRadebe,
         from: "The Custodian",
-        message: `Welcome to Tatawala Nature Reserve. As the government-appointed overseer of this land, I must emphasize the importance of your role here. Your lodge operates under our jurisdiction, and we expect you to uphold the highest standards of conservation. Any infractions against our wildlife policies will be dealt with swiftly and decisively.
+        message: `As the government-appointed overseer of this land, I must emphasize the importance of your role here. Your lodge operates under our jurisdiction, and we expect you to uphold the highest standards of conservation. Any infractions against our wildlife policies will be dealt with swiftly and decisively.
 
           For your convenience and to ensure transparency, we've provided a satellite feed. This will allow you to monitor both your lodge and the broader reserve.`,
         action: [
@@ -52,7 +53,7 @@ export const tutorialSteps = [
       sendMessage({
         character: Character.JamesRadebe,
         from: "The Custodian",
-        message: `To get acquainted with the satellite interface, I'd suggest starting with your lodge. I'll place a marker on the map for you. Click on it, and a range of options and details will become available. Go ahead, click on the lodge and explore the available actions.`,
+        message: `To get acquainted with the satellite interface, I'd suggest starting with your lodge. I'll place a marker on the map for you. Click on it, and a range of options and details will become available..`,
         action: [
           {
             friendlyName: "Thanks, i'll take a look!",
@@ -86,6 +87,11 @@ export const tutorialSteps = [
     }
     store.dispatch(selectItem(store.getState().game.selectedItemUID));
     store.dispatch(placeItem({ x: 1, y: 8, item: ItemType.Lion }));
+    const tracker = store
+      .getState()
+      .game.cells.find((x) => x.item.itemType === ItemType.Tracker);
+
+    store.dispatch(highlightItem({ x: tracker.x, y: tracker.y }));
     store.dispatch(
       sendMessage({
         character: Character.JamesRadebe,
@@ -118,10 +124,11 @@ export const tutorialSteps = [
         sendMessage({
           character: Character.JamesRadebe,
           from: "The Custodian",
-          message: `I noticed you've called your tracker back without deploying him to the field. That's a costly mistake. However, I'll extend a grant to you so you can hire another tracker and give it another shot. Make sure to use this opportunity wisely.`,
+          message: `I warned you about Tusk. Remember, your operation here is under my purview. However, I'll offer you another opportunity. There's an upcoming wildlife conservation workshop; I suggest you get involved. It will also serve as a good PR boost for your lodge.`,
           action: [
             {
-              friendlyName: "Thanks!",
+              friendlyName:
+                "Thank you for the second chance, Mr. Radebe. I'll get right on organizing that workshop.",
               action: MessageAction.DonateMoney,
               features: [Feature.Highlight],
             },
@@ -189,6 +196,209 @@ export const tutorialSteps = [
     );
 
     return true;
+  },
+
+  () => {
+    const game = store.getState().game;
+    if (game.activeMissions.length > 0) {
+      return false;
+    }
+
+    //bad outcome
+    if (
+      game.characters.find((x) => x.name === Character.JamesRadebe).stats
+        .relationshipStrength < 2
+    ) {
+      store.dispatch(
+        sendMessage({
+          character: Character.Tracker,
+          from: "Tracker",
+          message: `"Elon Tusk just stepped out of the game vehicle and tried to take a selfie with the lion. He's really agitated her. Mr. Radebe is definitely not going to be pleased about this.`,
+          action: [
+            {
+              friendlyName:
+                "Thanks for the headsup, ill try do some damage control.",
+              action: MessageAction.Dismiss,
+              features: [Feature.Highlight],
+            },
+          ],
+          isRead: false,
+          isSelected: false,
+        })
+      );
+      store.dispatch(
+        addCharacterAction({
+          character: Character.JamesRadebe,
+          characterAction: {
+            question: `I did warn you about that Tusk character!
+
+              Don't forget, your operation here exists at my discretion. However, I'm willing to give you another chance. I've been hearing whispers that he's initiating some sort of project over at Lysandra's Lodge.
+
+              Do you have any insights into what exactly he's planning?`,
+            options: [
+              {
+                response:
+                  "As far as I know, Mr. Tusk is just another guest at Lysandra's Lodge (Lie). ",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.JamesRadebe,
+                },
+              },
+              {
+                response:
+                  "Yes, Mr. Tusk is in the process of installing an advanced wildlife tracking system at Lysandra's Lodge (Truth).",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.JamesRadebe,
+                },
+              },
+            ],
+          },
+        })
+      );
+
+      store.dispatch(
+        addCharacterAction({
+          character: Character.LysandraKorr,
+          characterAction: {
+            question: `Mr. Tusk was absolutely thrilled with his experience and is eager to return.
+
+              In fact, he's expressed interest in sponsoring a high-tech wildlife monitoring system for the reserve.
+
+              He believes it will not only help with conservation efforts but also provide real-time data for guests to engage with during their stay. Can you keep this between us for now?`,
+            options: [
+              {
+                response:
+                  "Great, Can I get access? You secret is safe with me.",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.LysandraKorr,
+                },
+              },
+              {
+                response: "I can' afford to cross Mr Radebe now...",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.LysandraKorr,
+                },
+              },
+            ],
+          },
+        })
+      );
+      return true;
+    } else {
+      store.dispatch(
+        sendMessage({
+          character: Character.Tracker,
+          from: "Tracker",
+          message: `The family had an incredible experience. The lioness approached the vehicle quite closely, making for some unforgettable moments. They're on their way back to Lysandra's Lodge as we speak.`,
+          action: [
+            {
+              friendlyName: "Thats great to hear.",
+              action: MessageAction.Dismiss,
+              features: [Feature.Highlight],
+            },
+          ],
+          isRead: false,
+          isSelected: false,
+        })
+      );
+      store.dispatch(
+        addCharacterAction({
+          character: Character.JamesRadebe,
+          characterAction: {
+            question: `You handled the situation with Mr. Tusk admirably.
+
+            However, I've been hearing whispers that he's initiating some sort of project over at Lysandra's Lodge.
+
+            Do you have any insights into what exactly he's planning?`,
+            options: [
+              {
+                response:
+                  "Yes, Mr. Tusk is in the process of installing an advanced wildlife tracking system at Lysandra's Lodge. She has no intentions of sharing the technology with me (Truth)",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.JamesRadebe,
+                },
+              },
+              {
+                response:
+                  "As far as I know, Mr. Tusk is just another guest at Lysandra's Lodge, taking in the natural beauty like anyone else would (Lie)",
+                riskProfile: 6,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 1,
+                  questionFrom: Character.JamesRadebe,
+                },
+              },
+            ],
+          },
+        })
+      );
+
+      store.dispatch(
+        addCharacterAction({
+          character: Character.LysandraKorr,
+          characterAction: {
+            question: `Mr. Tusk wasn't pleased about missing the game drive, so he's taking matters into his own hands.
+
+            He's setting up a state-of-the-art wildlife tracking system at my lodge for his personal drives.
+
+            I'm not inclined to extend access to you at this time... unless you can keep it between us?`,
+            options: [
+              {
+                response:
+                  "Thats' your perogative. I am sure Mr Radebe would be interested in this.",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.LysandraKorr,
+                },
+              },
+
+              {
+                response: "Sure, your secret is safe with me",
+                riskProfile: 1,
+                missionAction: {
+                  missionType: MissionType.EndGame,
+                  uid: crypto.randomUUID(),
+                  modifyRelationship: [],
+                  rewardMultiplier: 2,
+                  questionFrom: Character.LysandraKorr,
+                },
+              },
+            ],
+          },
+        })
+      );
+      return true;
+    }
   },
 ];
 const initialState: tutorialSlice = {

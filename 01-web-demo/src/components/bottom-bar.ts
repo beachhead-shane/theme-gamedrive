@@ -70,6 +70,25 @@ class BottomBar extends LitElement {
       color: green;
       font-size: 1.1em;
     }
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      }
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
   `;
   advance() {
     store.dispatch(processBoard());
@@ -90,6 +109,9 @@ class BottomBar extends LitElement {
   bankBalance: number;
 
   @state()
+  hasMissions: boolean;
+
+  @state()
   flashNumber: FlashNumber = FlashNumber.None;
 
   unsubscribe: Unsubscribe;
@@ -105,6 +127,13 @@ class BottomBar extends LitElement {
     this.features = store.getState().game.features;
     this.activeView = store.getState().game.view;
     const newBalance = store.getState().game.bankBalance;
+
+    this.hasMissions = false;
+    store.getState().game.characters.forEach((character) => {
+      if (character.actions.length > 0) {
+        this.hasMissions = true;
+      }
+    });
     if (this.flashNumber === FlashNumber.None) {
       this.flashNumber =
         newBalance > this.bankBalance
@@ -175,7 +204,13 @@ class BottomBar extends LitElement {
           satellite feed
         </button>
         <button
-          class="${this.activeView === View.Relationships ? "selected" : ""}"
+          class="${this.activeView === View.Relationships
+            ? "selected"
+            : ""} ${this.features?.relationships &&
+          this.hasMissions &&
+          this.activeView !== View.Relationships
+            ? "pulse"
+            : ""}"
           ?disabled=${!this.features?.relationships}
           @click="${this.viewRelationships}"
         >

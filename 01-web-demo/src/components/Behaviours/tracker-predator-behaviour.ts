@@ -29,7 +29,7 @@ export const trackSleepingPredatorBehaviour: Behaviour = (
 
   if (distanceToAnimal <= 2) {
     // we are too close do nothing
-    return { stop: false, board };
+    return { stop: true, board };
   }
   //  if (isSleeping(predator.item, timeOfDay)) {
   const bestMove = potentialMoves.reduce((closestMove, move) => {

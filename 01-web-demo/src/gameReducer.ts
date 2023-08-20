@@ -1,3 +1,4 @@
+const TICK_LENGTH = 1000;
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { store } from "./state";
 import {
@@ -19,8 +20,11 @@ import {
   Character,
   Custodian,
   ICharacter,
+  ICharacterAction,
   LysandraKorr,
   MissionAction,
+  MissionType,
+  Tracker,
 } from "./Types/Characters/ICharacter";
 
 const enum MissionState {
@@ -85,6 +89,15 @@ export const missions = {
       mission: mission,
     };
   },
+
+  EndGame: (mission: IMissionData, board: Array<IGameCell>) => {
+    mission.missionState = MissionState.Complete;
+    return {
+      done: true,
+      board: board,
+      mission: mission,
+    };
+  },
 };
 const GenerateInitialState: () => gameStateSlice = () => {
   const cells: Array<IGameCell> = [];
@@ -108,7 +121,7 @@ const GenerateInitialState: () => gameStateSlice = () => {
     view: View.None,
     features: {},
     activeMissions: [],
-    characters: [Custodian(), LysandraKorr()],
+    characters: [Custodian(), LysandraKorr(), Tracker()],
     bankBalance: 100,
     modal: {
       message:
@@ -172,12 +185,13 @@ const slice = createSlice({
         state.timerId = stateFromDisk.timerId;
         state.characters = stateFromDisk.characters;
         state.modal = stateFromDisk.modal;
+        state.bankBalance = stateFromDisk.bankBalance;
         //we need to start timer
         if (state.timerId && state.timerId > 0) {
           state.timerId = window.setInterval(() => {
             store.dispatch(processBoard());
             store.dispatch(processMissions());
-          }, 2000);
+          }, TICK_LENGTH);
         }
         state.view = stateFromDisk.view;
       }
@@ -187,7 +201,7 @@ const slice = createSlice({
         state.timerId = window.setInterval(() => {
           store.dispatch(processBoard());
           store.dispatch(processMissions());
-        }, 2000);
+        }, TICK_LENGTH);
       } else {
         window.clearInterval(state.timerId);
         state.timerId = 0;
@@ -199,7 +213,7 @@ const slice = createSlice({
         state.timerId = window.setInterval(() => {
           store.dispatch(processBoard());
           store.dispatch(processMissions());
-        }, 2000);
+        }, TICK_LENGTH);
       } else {
         window.clearInterval(state.timerId);
         state.timerId = 0;
@@ -259,6 +273,12 @@ const slice = createSlice({
       );
 
       completedMissions.forEach((mission) => {
+        if (mission.missionAction.missionType === MissionType.EndGame) {
+          state.modal.buttonMessage = "Replay";
+          state.modal.visible = true;
+          state.modal.message =
+            "Thank you for taking the time to try out our prototype. We're excited about our vision for this game, which involves a rich blend of wildlife conservation, lodge management, and community interactions. The core gameplay is all about making impactful decisions that will shape your lodge's reputation, your finances, and even the natural world you're a part of. We appreciate your interest and can't wait to share more developments with you";
+        }
         console.log("mission complete!", mission);
         state.bankBalance += 100 * mission.missionAction.rewardMultiplier;
 
@@ -317,6 +337,19 @@ const slice = createSlice({
         (x) => x !== Feature.Highlight
       );
     },
+
+    addCharacterAction(
+      state,
+      action: PayloadAction<{
+        character: Character;
+        characterAction: ICharacterAction;
+      }>
+    ) {
+      const index = state.characters.findIndex(
+        (x) => x.name === action.payload.character
+      );
+      state.characters[index].actions.push(action.payload.characterAction);
+    },
     dismissMessage(state, action: PayloadAction<number>) {
       state.messages.splice(action.payload, 1);
     },
@@ -345,7 +378,6 @@ const slice = createSlice({
           break;
 
         case MessageAction.EnableRelationships:
-          state.view = View.Relationships;
           state.features.relationships = true;
           break;
 
@@ -354,7 +386,6 @@ const slice = createSlice({
           break;
 
         case MessageAction.Dismiss:
-          state.messages.splice(action.payload.messageIndex, 1);
           break;
       }
       state.messages.splice(action.payload.messageIndex, 1);
@@ -425,6 +456,7 @@ const slice = createSlice({
 });
 
 export const {
+  addCharacterAction,
   pause,
   invokeModalButton,
   loadMap,
