@@ -1,11 +1,12 @@
-import { css, html, LitElement, PropertyValueMap } from "lit";
+import { css, html, LitElement, nothing, PropertyValueMap } from "lit";
 import "./components/game-board";
 import "./components/cell";
 import "./components/bottom-bar";
 import "./components/side-bar";
 import "./components/relationships-view";
+import "./components/modal";
 import { store } from "./state";
-import { loadMap, loadSaveForGameSlice, togglePlay } from "./gameReducer";
+import { loadMap, loadSaveForGameSlice } from "./gameReducer";
 import { View } from "./Types/View";
 import { IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
@@ -23,6 +24,7 @@ class App extends LitElement {
     }
     .outer-container {
       display: flex;
+      position: relative;
     }
   `;
 
@@ -38,6 +40,9 @@ class App extends LitElement {
   @state()
   playTimer: number = 0;
 
+  @state()
+  showModal: boolean;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -49,6 +54,7 @@ class App extends LitElement {
     this.gameData = store.getState().game.cells;
     this.time = store.getState().game.time;
     this.view = store.getState().game.view;
+    this.showModal = store.getState().game.modal.visible;
   }
 
   protected firstUpdated(
@@ -88,7 +94,7 @@ class App extends LitElement {
           imageItems.height
         );*/
         // store.dispatch(loadItems(Array.from(imageDataLion.data)));
-        store.dispatch(togglePlay());
+        //  store.dispatch(togglePlay());
       };
       imageItems.src = srcItems;
     };
@@ -108,11 +114,14 @@ class App extends LitElement {
     }
 
     return html`
-      <div class="outer-container">
-        <side-bar></side-bar>
-        <game-board> ${view} </game-board>
+      <div>
+        <div class="outer-container">
+          <side-bar></side-bar>
+          <game-board> ${view} </game-board>
+        </div>
+        <bottom-bar time=${this.time}></bottom-bar>
+        ${this.showModal ? html`<modal-window></modal-window>` : nothing}
       </div>
-      <bottom-bar time=${this.time}></bottom-bar>
     `;
   }
 }

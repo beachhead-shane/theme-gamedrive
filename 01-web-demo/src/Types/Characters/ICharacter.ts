@@ -6,7 +6,7 @@ enum CharacterRole {
 export interface MissionAction {
   uid: string;
   questionFrom: Character;
-  modifyRelationship: number;
+  modifyRelationship: Array<{ character: Character; value: number }>;
   rewardMultiplier: number;
   missionType: MissionType;
 }
@@ -73,7 +73,10 @@ export const LysandraKorr: () => ICharacter = () => {
             missionAction: {
               uid: crypto.randomUUID(),
               rewardMultiplier: 2,
-              modifyRelationship: 1,
+              modifyRelationship: [
+                { character: Character.LysandraKorr, value: 2 },
+                { character: Character.JamesRadebe, value: -2 },
+              ],
               missionType: MissionType.GameDrive,
               questionFrom: Character.LysandraKorr,
             },
@@ -85,7 +88,10 @@ export const LysandraKorr: () => ICharacter = () => {
             missionAction: {
               uid: crypto.randomUUID(),
               rewardMultiplier: 1,
-              modifyRelationship: -1,
+              modifyRelationship: [
+                { character: Character.LysandraKorr, value: -2 },
+                { character: Character.JamesRadebe, value: 2 },
+              ],
               missionType: MissionType.GameDrive,
               questionFrom: Character.LysandraKorr,
             },

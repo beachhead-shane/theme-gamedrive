@@ -6,6 +6,8 @@ import {
   defaultItems,
   ItemType,
   Order,
+  HasFeature,
+  Feature,
 } from "./Types/Items/Item";
 import { TileType } from "./Types/TileType";
 import { IGameCell } from "./Types/IGameCell";
@@ -31,6 +33,12 @@ export interface IMissionData {
   missionAction: MissionAction;
   itemUIDS: Array<string>;
 }
+
+export interface IModal {
+  message: string;
+  buttonMessage: string;
+  visible: boolean;
+}
 export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
@@ -41,6 +49,8 @@ export interface gameStateSlice {
   features: IFeatures;
   activeMissions: Array<IMissionData>;
   characters: Array<ICharacter>;
+  bankBalance: number;
+  modal: IModal;
 }
 
 export const missions = {
@@ -99,6 +109,13 @@ const GenerateInitialState: () => gameStateSlice = () => {
     features: {},
     activeMissions: [],
     characters: [Custodian(), LysandraKorr()],
+    bankBalance: 100,
+    modal: {
+      message:
+        "This prototype is crafted to showcase the essence of our moment-to-moment gameplay and foundational story elements. Our goal is to present a simulation and role-playing game game that features a user-friendly interface, making it accessible for newcomers. At the same time, we offer an engaging and novel subject matter designed to captivate seasoned fans of the genre.",
+      buttonMessage: "Click here to start",
+      visible: true,
+    },
   };
 };
 const initialState = GenerateInitialState();
@@ -154,6 +171,7 @@ const slice = createSlice({
         state.time = stateFromDisk.time;
         state.timerId = stateFromDisk.timerId;
         state.characters = stateFromDisk.characters;
+        state.modal = stateFromDisk.modal;
         //we need to start timer
         if (state.timerId && state.timerId > 0) {
           state.timerId = window.setInterval(() => {
@@ -175,18 +193,54 @@ const slice = createSlice({
         state.timerId = 0;
       }
     },
+    invokeModalButton(state) {
+      state.modal.visible = false;
+      if (state.timerId === 0) {
+        state.timerId = window.setInterval(() => {
+          store.dispatch(processBoard());
+          store.dispatch(processMissions());
+        }, 2000);
+      } else {
+        window.clearInterval(state.timerId);
+        state.timerId = 0;
+      }
+    },
     pause(state) {
       window.clearInterval(state.timerId);
       state.timerId = 0;
     },
     placeItem(
       state,
-      action: PayloadAction<{ x: number; y: number; item: ItemType }>
+      action: PayloadAction<{
+        x: number;
+        y: number;
+        item: ItemType;
+      }>
     ) {
       const index = state.cells.findIndex(
         (x) => x.x === action.payload.x && x.y === action.payload.y
       );
       state.cells[index].item = defaultItems()[action.payload.item];
+    },
+    highlightItem(state, action: PayloadAction<{ x: number; y: number }>) {
+      const index = state.cells.findIndex(
+        (x) => x.x === action.payload.x && x.y === action.payload.y
+      );
+      if (!HasFeature(state.cells[index].item, Feature.Highlight)) {
+        state.cells[index].item.features.push(Feature.Highlight);
+      }
+    },
+    unhighlightItem(state, action: PayloadAction<{ x: number; y: number }>) {
+      const index = state.cells.findIndex(
+        (x) => x.x === action.payload.x && x.y === action.payload.y
+      );
+      console.log([...state.cells[index].item.features]);
+      state.cells[index].item.features = [
+        ...state.cells[index].item.features.filter(
+          (x) => x !== Feature.Highlight
+        ),
+      ];
+      console.log([...state.cells[index].item.features]);
     },
     processMissions(state) {
       const done: Array<boolean> = [];
@@ -198,6 +252,23 @@ const slice = createSlice({
         );
         done.push(result.done);
         state.cells = result.board;
+      });
+
+      const completedMissions = state.activeMissions.filter(
+        (opt, index) => done[index]
+      );
+
+      completedMissions.forEach((mission) => {
+        console.log("mission complete!", mission);
+        state.bankBalance += 100 * mission.missionAction.rewardMultiplier;
+
+        mission.missionAction.modifyRelationship.forEach((rel) => {
+          const characterIndex = state.characters.findIndex(
+            (x) => x.name == rel.character
+          );
+          state.characters[characterIndex].stats.relationshipStrength +=
+            rel.value;
+        });
       });
 
       state.activeMissions = state.activeMissions.filter(
@@ -224,15 +295,27 @@ const slice = createSlice({
       action: PayloadAction<{
         cell: IGameCell;
         action: Action;
-        momentary: boolean;
       }>
     ) {
       const index = state.cells.findIndex(
         (x) => x.x == action.payload.cell.x && x.y === action.payload.cell.y
       );
-      //if (!action.payload.momentary) {
+      const actionIndex = state.cells[index].item.actions.findIndex(
+        (x) => x.action === action.payload.action
+      );
+      const cost = state.cells[index].item.actions[actionIndex].actionCost;
+      if (state.bankBalance <= cost) {
+        return;
+      }
+      state.bankBalance -= cost;
+
       state.cells[index].item.activeAction = action.payload.action;
-      //}
+
+      state.cells[index].item.actions[actionIndex].features = state.cells[
+        index
+      ].item.actions[actionIndex].features.filter(
+        (x) => x !== Feature.Highlight
+      );
     },
     dismissMessage(state, action: PayloadAction<number>) {
       state.messages.splice(action.payload, 1);
@@ -265,6 +348,11 @@ const slice = createSlice({
           state.view = View.Relationships;
           state.features.relationships = true;
           break;
+
+        case MessageAction.DonateMoney:
+          state.bankBalance += 60;
+          break;
+
         case MessageAction.Dismiss:
           state.messages.splice(action.payload.messageIndex, 1);
           break;
@@ -338,7 +426,7 @@ const slice = createSlice({
 
 export const {
   pause,
-
+  invokeModalButton,
   loadMap,
   loadItems,
   processBoard,
@@ -354,5 +442,7 @@ export const {
   selectMessage,
   answerQuestion,
   processMissions,
+  highlightItem,
+  unhighlightItem,
 } = slice.actions;
 export default slice.reducer;

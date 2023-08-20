@@ -11,7 +11,7 @@ import {
 } from "../gameReducer";
 import { IMessage } from "../Types/IMessage";
 import { Unsubscribe } from "@reduxjs/toolkit";
-import { Action } from "../Types/Items/Item";
+import { Action, Feature } from "../Types/Items/Item";
 import { getIconFromCell, IGameCell } from "../Types/IGameCell";
 class SideBar extends LitElement {
   constructor() {
@@ -95,7 +95,7 @@ class SideBar extends LitElement {
       text-overflow: initial;
       white-space: pre-line;
       overflow-y: scroll;
-      max-height: 150px !important;
+      max-height: 200px !important;
       cursor: initial;
     }
 
@@ -105,6 +105,7 @@ class SideBar extends LitElement {
       text-align: center;
       padding: 3px;
       cursor: pointer;
+      white-space: initial;
     }
 
     @keyframes pulse {
@@ -187,8 +188,8 @@ class SideBar extends LitElement {
     store.dispatch(togglePlay());
   }
 
-  selectAction(cell: IGameCell, action: Action, momentary: boolean) {
-    store.dispatch(setAction({ cell, action, momentary }));
+  selectAction(cell: IGameCell, action: Action) {
+    store.dispatch(setAction({ cell, action }));
   }
   onMessageClick(index: number) {
     store.dispatch(selectMessage(index));
@@ -202,8 +203,19 @@ class SideBar extends LitElement {
   }
   render() {
     if (!this.activeCell) {
+      let thumbnail = "thumbnails/cellphone.png";
+
+      this.messages.forEach((msg) => {
+        if (msg.isSelected) {
+          thumbnail = `thumbnails/${
+            store
+              .getState()
+              .game.characters.find((x) => x.name == msg.character).thumbnailSrc
+          }`;
+        }
+      });
       return html`<div class="container">
-        <img src="thumbnails/cellphone.png" class="thumbnail" />
+        <img src="${thumbnail}" class="thumbnail" />
         <div class="heading"></div>
         <b>Messages</b>
         ${this.messages.map(
@@ -222,9 +234,11 @@ class SideBar extends LitElement {
               ${message.isSelected
                 ? message.action.map(
                     (act) => html`
-                      <div
-                        class="message-action ${message.highlight
-                          ? "pulse-no-shadow"
+                      <button
+                        class="message-action ${act.features.includes(
+                          Feature.Highlight
+                        )
+                          ? "pulse"
                           : ""}"
                         @click=${() => {
                           store.dispatch(
@@ -236,7 +250,7 @@ class SideBar extends LitElement {
                         }}
                       >
                         ${act.friendlyName}
-                      </div>
+                      </button>
                     `
                   )
                 : nothing}
@@ -258,19 +272,24 @@ class SideBar extends LitElement {
         (actionDetails) => html`
           <div>
             <button
-              class="${this.activeCell.item.activeAction ===
-              actionDetails.action
+              ?disabled="${actionDetails.actionCost >
+              store.getState().game.bankBalance}"
+              class="
+              ${actionDetails.features.includes(Feature.Highlight)
+                ? "pulse"
+                : ""}
+
+              ${this.activeCell.item.activeAction === actionDetails.action
                 ? "active"
                 : ""}"
               @click="${() => {
-                this.selectAction(
-                  this.activeCell,
-                  actionDetails.action,
-                  actionDetails.momentary
-                );
+                this.selectAction(this.activeCell, actionDetails.action);
               }}"
             >
               ${actionDetails.friendlyName}
+              ${actionDetails.actionCost > 0
+                ? html`($${actionDetails.actionCost})`
+                : nothing}
             </button>
           </div>
         `

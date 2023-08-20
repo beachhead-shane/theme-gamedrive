@@ -70,9 +70,9 @@ export const behaviors = {
   Tracker: (tracker: IGameCell, board: Array<IGameCell>, timeOfDay: number) => {
     if (tracker.item.activeAction === Action.Track) {
       const behaviourManager: BehaviourManager = new BehaviourManager([
-        destroyAtMoraleBehaviour,
+        // destroyAtMoraleBehaviour,
         ageBehaviour,
-        fatiguedBehaviour,
+        //fatiguedBehaviour,
         revealAnimalBehaviour,
         trackSleepingPredatorBehaviour,
         followTrackBehaviour,
