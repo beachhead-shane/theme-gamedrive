@@ -7,7 +7,7 @@ namespace UnhappyMeatFactory
     {
         public bool CanManufacture(List<Resource> listOfInputs)
         {
-            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Cow);
+            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Human);
         }
 
         protected override List<Resource> Manufacture(List<Resource> selectedInputs)
