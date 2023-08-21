@@ -7,12 +7,10 @@ import {
 } from "../../Types/Items/Item";
 import { Behaviour } from "./BehaviourManager";
 import { generatePotentialMovesList } from "./behavior-helper";
-import { isSleeping } from "./sleep-behaviour";
 
 export const trackSleepingPredatorBehaviour: Behaviour = (
   item: IGameCell,
-  board: Array<IGameCell>,
-  timeOfDay: number
+  board: Array<IGameCell>
 ) => {
   //find nocturnal prey
   const predator = board.find(
@@ -31,33 +29,33 @@ export const trackSleepingPredatorBehaviour: Behaviour = (
 
   if (distanceToAnimal <= 2) {
     // we are too close do nothing
-    return { stop: false, board };
-  }
-  if (isSleeping(predator.item, timeOfDay)) {
-    const bestMove = potentialMoves.reduce((closestMove, move) => {
-      const currentDistance =
-        Math.abs(predator.x - move.x) + Math.abs(predator.y - move.y);
-      const closestDistance =
-        Math.abs(predator.x - closestMove.x) +
-        Math.abs(predator.y - closestMove.y);
-
-      return currentDistance < closestDistance ? move : closestMove;
-    }, potentialMoves[0]);
-    // Update the tracker's position on the board.
-    const trackerIndex = board.findIndex(
-      (cell) => cell.x === item.x && cell.y === item.y
-    );
-    const newTrackerPositionIndex = board.findIndex(
-      (cell) => cell.x === bestMove.x && cell.y === bestMove.y
-    );
-
-    if (trackerIndex !== -1 && newTrackerPositionIndex !== -1) {
-      board[newTrackerPositionIndex].item = { ...board[trackerIndex].item };
-      board[newTrackerPositionIndex].item.stats.fatigue += 1;
-      board[trackerIndex].item = defaultItems()[ItemType.None];
-    }
     return { stop: true, board };
   }
+  //  if (isSleeping(predator.item, timeOfDay)) {
+  const bestMove = potentialMoves.reduce((closestMove, move) => {
+    const currentDistance =
+      Math.abs(predator.x - move.x) + Math.abs(predator.y - move.y);
+    const closestDistance =
+      Math.abs(predator.x - closestMove.x) +
+      Math.abs(predator.y - closestMove.y);
 
-  return { stop: false, board };
+    return currentDistance < closestDistance ? move : closestMove;
+  }, potentialMoves[0]);
+  // Update the tracker's position on the board.
+  const trackerIndex = board.findIndex(
+    (cell) => cell.x === item.x && cell.y === item.y
+  );
+  const newTrackerPositionIndex = board.findIndex(
+    (cell) => cell.x === bestMove.x && cell.y === bestMove.y
+  );
+
+  if (trackerIndex !== -1 && newTrackerPositionIndex !== -1) {
+    board[newTrackerPositionIndex].item = { ...board[trackerIndex].item };
+    board[newTrackerPositionIndex].item.stats.fatigue += 1;
+    board[trackerIndex].item = defaultItems()[ItemType.None];
+  }
+  return { stop: true, board };
+  // }
+
+  // return { stop: false, board };
 };

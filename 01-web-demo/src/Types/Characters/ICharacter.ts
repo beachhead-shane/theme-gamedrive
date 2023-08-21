@@ -1,18 +1,20 @@
 enum CharacterRole {
   Custodian = "Custodian", //James Radebe
   LodgeManager = "Lodge Manager",
+  Staff = "Staff",
 }
 
 export interface MissionAction {
   uid: string;
   questionFrom: Character;
-  modifyRelationship: number;
+  modifyRelationship: Array<{ character: Character; value: number }>;
   rewardMultiplier: number;
   missionType: MissionType;
 }
 
 export enum MissionType {
   GameDrive = "GameDrive",
+  EndGame = "EndGame",
 }
 interface ICharacterActionQuestionOption {
   response: string;
@@ -27,6 +29,7 @@ export interface ICharacterStats {
   relationshipStrength: number;
 }
 export interface ICharacter {
+  showRelationship: boolean;
   name: Character;
   role: CharacterRole;
   description: string;
@@ -34,14 +37,16 @@ export interface ICharacter {
   stats: ICharacterStats;
   actions: Array<ICharacterAction>;
 }
-
+``;
 export const enum Character {
+  Tracker = "Tracker",
   JamesRadebe = "James Radebe",
   LysandraKorr = "Lysandra Korr",
 }
 
 export const Custodian: () => ICharacter = () => {
   return {
+    showRelationship: true,
     name: Character.JamesRadebe,
     role: CharacterRole.Custodian,
     thumbnailSrc: "custodian.png",
@@ -54,8 +59,24 @@ export const Custodian: () => ICharacter = () => {
   };
 };
 
+export const Tracker: () => ICharacter = () => {
+  return {
+    showRelationship: false,
+    name: Character.Tracker,
+    thumbnailSrc: "tracker.png",
+    role: CharacterRole.Staff,
+
+    stats: {
+      relationshipStrength: 6,
+    },
+    actions: [],
+    description: "",
+  };
+};
+
 export const LysandraKorr: () => ICharacter = () => {
   return {
+    showRelationship: true,
     name: Character.LysandraKorr,
     thumbnailSrc: "lysandra.png",
     role: CharacterRole.LodgeManager,
@@ -73,7 +94,10 @@ export const LysandraKorr: () => ICharacter = () => {
             missionAction: {
               uid: crypto.randomUUID(),
               rewardMultiplier: 2,
-              modifyRelationship: 1,
+              modifyRelationship: [
+                { character: Character.LysandraKorr, value: 2 },
+                { character: Character.JamesRadebe, value: -2 },
+              ],
               missionType: MissionType.GameDrive,
               questionFrom: Character.LysandraKorr,
             },
@@ -85,7 +109,10 @@ export const LysandraKorr: () => ICharacter = () => {
             missionAction: {
               uid: crypto.randomUUID(),
               rewardMultiplier: 1,
-              modifyRelationship: -1,
+              modifyRelationship: [
+                { character: Character.LysandraKorr, value: -2 },
+                { character: Character.JamesRadebe, value: 2 },
+              ],
               missionType: MissionType.GameDrive,
               questionFrom: Character.LysandraKorr,
             },

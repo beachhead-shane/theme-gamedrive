@@ -1,3 +1,4 @@
+const TICK_LENGTH = 1000;
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { store } from "./state";
 import {
@@ -6,6 +7,8 @@ import {
   defaultItems,
   ItemType,
   Order,
+  HasFeature,
+  Feature,
 } from "./Types/Items/Item";
 import { TileType } from "./Types/TileType";
 import { IGameCell } from "./Types/IGameCell";
@@ -17,8 +20,11 @@ import {
   Character,
   Custodian,
   ICharacter,
+  ICharacterAction,
   LysandraKorr,
   MissionAction,
+  MissionType,
+  Tracker,
 } from "./Types/Characters/ICharacter";
 
 const enum MissionState {
@@ -31,6 +37,12 @@ export interface IMissionData {
   missionAction: MissionAction;
   itemUIDS: Array<string>;
 }
+
+export interface IModal {
+  message: string;
+  buttonMessage: string;
+  visible: boolean;
+}
 export interface gameStateSlice {
   cells: Array<IGameCell>;
   time: number;
@@ -41,6 +53,8 @@ export interface gameStateSlice {
   features: IFeatures;
   activeMissions: Array<IMissionData>;
   characters: Array<ICharacter>;
+  bankBalance: number;
+  modal: IModal;
 }
 
 export const missions = {
@@ -75,6 +89,15 @@ export const missions = {
       mission: mission,
     };
   },
+
+  EndGame: (mission: IMissionData, board: Array<IGameCell>) => {
+    mission.missionState = MissionState.Complete;
+    return {
+      done: true,
+      board: board,
+      mission: mission,
+    };
+  },
 };
 const GenerateInitialState: () => gameStateSlice = () => {
   const cells: Array<IGameCell> = [];
@@ -98,7 +121,14 @@ const GenerateInitialState: () => gameStateSlice = () => {
     view: View.None,
     features: {},
     activeMissions: [],
-    characters: [Custodian(), LysandraKorr()],
+    characters: [Custodian(), LysandraKorr(), Tracker()],
+    bankBalance: 100,
+    modal: {
+      message:
+        "This prototype is crafted to showcase the essence of our moment-to-moment gameplay and foundational story elements. Our goal is to present a simulation and role-playing game game that features a user-friendly interface, making it accessible for newcomers. At the same time, we offer an engaging and novel subject matter designed to captivate seasoned fans of the genre.",
+      buttonMessage: "Click here to start",
+      visible: true,
+    },
   };
 };
 const initialState = GenerateInitialState();
@@ -154,22 +184,39 @@ const slice = createSlice({
         state.time = stateFromDisk.time;
         state.timerId = stateFromDisk.timerId;
         state.characters = stateFromDisk.characters;
+        state.modal = stateFromDisk.modal;
+        state.bankBalance = stateFromDisk.bankBalance;
         //we need to start timer
         if (state.timerId && state.timerId > 0) {
           state.timerId = window.setInterval(() => {
             store.dispatch(processBoard());
             store.dispatch(processMissions());
-          }, 2000);
+          }, TICK_LENGTH);
         }
         state.view = stateFromDisk.view;
       }
+    },
+    clearSelectedItem(state) {
+      state.selectedItemUID = null;
     },
     togglePlay(state) {
       if (state.timerId === 0) {
         state.timerId = window.setInterval(() => {
           store.dispatch(processBoard());
           store.dispatch(processMissions());
-        }, 2000);
+        }, TICK_LENGTH);
+      } else {
+        window.clearInterval(state.timerId);
+        state.timerId = 0;
+      }
+    },
+    invokeModalButton(state) {
+      state.modal.visible = false;
+      if (state.timerId === 0) {
+        state.timerId = window.setInterval(() => {
+          store.dispatch(processBoard());
+          store.dispatch(processMissions());
+        }, TICK_LENGTH);
       } else {
         window.clearInterval(state.timerId);
         state.timerId = 0;
@@ -181,12 +228,36 @@ const slice = createSlice({
     },
     placeItem(
       state,
-      action: PayloadAction<{ x: number; y: number; item: ItemType }>
+      action: PayloadAction<{
+        x: number;
+        y: number;
+        item: ItemType;
+      }>
     ) {
       const index = state.cells.findIndex(
         (x) => x.x === action.payload.x && x.y === action.payload.y
       );
       state.cells[index].item = defaultItems()[action.payload.item];
+    },
+    highlightItem(state, action: PayloadAction<{ x: number; y: number }>) {
+      const index = state.cells.findIndex(
+        (x) => x.x === action.payload.x && x.y === action.payload.y
+      );
+      if (!HasFeature(state.cells[index].item, Feature.Highlight)) {
+        state.cells[index].item.features.push(Feature.Highlight);
+      }
+    },
+    unhighlightItem(state, action: PayloadAction<{ x: number; y: number }>) {
+      const index = state.cells.findIndex(
+        (x) => x.x === action.payload.x && x.y === action.payload.y
+      );
+      console.log([...state.cells[index].item.features]);
+      state.cells[index].item.features = [
+        ...state.cells[index].item.features.filter(
+          (x) => x !== Feature.Highlight
+        ),
+      ];
+      console.log([...state.cells[index].item.features]);
     },
     processMissions(state) {
       const done: Array<boolean> = [];
@@ -198,6 +269,34 @@ const slice = createSlice({
         );
         done.push(result.done);
         state.cells = result.board;
+      });
+
+      const completedMissions = state.activeMissions.filter(
+        (opt, index) => done[index]
+      );
+
+      completedMissions.forEach((mission) => {
+        if (mission.missionAction.missionType === MissionType.EndGame) {
+          state.modal.buttonMessage = "Ok";
+          state.modal.visible = true;
+          state.modal.message = `Thank you for taking the time to try out our prototype. We're excited about our vision for this game, which involves a rich blend of wildlife conservation, lodge management, and community interactions.
+
+            The core gameplay is all about making impactful decisions that will shape your lodge's reputation, your finances, and even the natural world you're a part of.
+
+            We appreciate your interest and can't wait to share more developments with you.
+
+            Click "Replay" on the bottom left to play through again.`;
+        }
+        console.log("mission complete!", mission);
+        state.bankBalance += 100 * mission.missionAction.rewardMultiplier;
+
+        mission.missionAction.modifyRelationship.forEach((rel) => {
+          const characterIndex = state.characters.findIndex(
+            (x) => x.name == rel.character
+          );
+          state.characters[characterIndex].stats.relationshipStrength +=
+            rel.value;
+        });
       });
 
       state.activeMissions = state.activeMissions.filter(
@@ -224,15 +323,40 @@ const slice = createSlice({
       action: PayloadAction<{
         cell: IGameCell;
         action: Action;
-        momentary: boolean;
       }>
     ) {
       const index = state.cells.findIndex(
         (x) => x.x == action.payload.cell.x && x.y === action.payload.cell.y
       );
-      //if (!action.payload.momentary) {
+      const actionIndex = state.cells[index].item.actions.findIndex(
+        (x) => x.action === action.payload.action
+      );
+      const cost = state.cells[index].item.actions[actionIndex].actionCost;
+      if (state.bankBalance <= cost) {
+        return;
+      }
+      state.bankBalance -= cost;
+
       state.cells[index].item.activeAction = action.payload.action;
-      //}
+
+      state.cells[index].item.actions[actionIndex].features = state.cells[
+        index
+      ].item.actions[actionIndex].features.filter(
+        (x) => x !== Feature.Highlight
+      );
+    },
+
+    addCharacterAction(
+      state,
+      action: PayloadAction<{
+        character: Character;
+        characterAction: ICharacterAction;
+      }>
+    ) {
+      const index = state.characters.findIndex(
+        (x) => x.name === action.payload.character
+      );
+      state.characters[index].actions.push(action.payload.characterAction);
     },
     dismissMessage(state, action: PayloadAction<number>) {
       state.messages.splice(action.payload, 1);
@@ -262,11 +386,14 @@ const slice = createSlice({
           break;
 
         case MessageAction.EnableRelationships:
-          state.view = View.Relationships;
           state.features.relationships = true;
           break;
+
+        case MessageAction.DonateMoney:
+          state.bankBalance += 60;
+          break;
+
         case MessageAction.Dismiss:
-          state.messages.splice(action.payload.messageIndex, 1);
           break;
       }
       state.messages.splice(action.payload.messageIndex, 1);
@@ -337,8 +464,9 @@ const slice = createSlice({
 });
 
 export const {
+  addCharacterAction,
   pause,
-
+  invokeModalButton,
   loadMap,
   loadItems,
   processBoard,
@@ -354,5 +482,8 @@ export const {
   selectMessage,
   answerQuestion,
   processMissions,
+  highlightItem,
+  unhighlightItem,
+  clearSelectedItem,
 } = slice.actions;
 export default slice.reducer;

@@ -1,9 +1,9 @@
 import { css, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { store } from "../state";
-import { selectItem } from "../gameReducer";
+import { clearSelectedItem, selectItem, unhighlightItem } from "../gameReducer";
 import { Unsubscribe } from "@reduxjs/toolkit";
-import { ItemType } from "../Types/Items/Item";
+import { Feature, HasFeature, ItemType } from "../Types/Items/Item";
 import { getIconFromCell } from "../Types/IGameCell";
 class Cell extends LitElement {
   constructor() {
@@ -34,6 +34,9 @@ class Cell extends LitElement {
   @state()
   timeOfDay: number;
 
+  @state()
+  isHighlighted: boolean;
+
   unsubscribe: Unsubscribe;
   connectedCallback(): void {
     super.connectedCallback();
@@ -48,8 +51,12 @@ class Cell extends LitElement {
       .game.cells.find((x) => x.x === this.x && x.y === this.y);
     this.isSelected = store.getState().game.selectedItemUID === cell.item.uid;
     this.tileType = cell.tileType;
-    this.itemVisible = cell.item.isVisible;
+    this.itemVisible = HasFeature(cell.item, Feature.Visible);
     this.age = cell.item.age;
+    this.isHighlighted = HasFeature(cell.item, Feature.Highlight);
+    if (this.isHighlighted) {
+      console.log("is Highglight!", cell.item.features);
+    }
     this.iconSrc = getIconFromCell(cell);
   }
 
@@ -123,13 +130,37 @@ class Cell extends LitElement {
       background-position: center;
       mix-blend-mode: multiply;
     }
+    .cursor {
+      cursor: pointer;
+    }
+    @keyframes pulse-no-shadow {
+      0% {
+        transform: scale(1.05);
+      }
+
+      70% {
+        transform: scale(1);
+        background-color: rgba(255, 255, 255, 0.7);
+
+        background-color: rgba(255, 255, 255, 0);
+      }
+
+      100% {
+        transform: scale(1.05);
+        background-color: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+    .is-highlighted {
+      animation: pulse-no-shadow 2s infinite;
+      cursor: pointer;
+    }
     @keyframes animatedBackground {
       0% {
         background-color: rgba(255, 255, 255, 0.7);
       }
 
       70% {
-        background-color: 0 0 0 10px rgba(255, 255, 255, 0);
+        background-color: rgba(255, 255, 255, 0);
       }
 
       100% {
@@ -156,6 +187,9 @@ class Cell extends LitElement {
             .game.cells.find((c) => c.x === this.x && c.y === this.y).item.uid
         )
       );
+      store.dispatch(unhighlightItem({ x: this.x, y: this.y }));
+    } else {
+      store.dispatch(clearSelectedItem());
     }
   }
 
@@ -188,18 +222,19 @@ class Cell extends LitElement {
   ];
   render() {
     return html`<div
-      class="${this.itemVisible && this.age <= 1
-        ? "background-animate"
-        : ""} cell ${this.tileType}  ${this.isSelected ? "selected" : ""}"
-      id="game-cell-${this.x}-${this.y}"
+      class="cell ${this.tileType} ${this.isSelected ? "selected" : ""} ${this
+        .isHighlighted
+        ? "is-highlighted"
+        : ""}"
+      id="game-cell-${this.x}-${this.y} "
       style="${this.itemVisible
         ? `background-image:url('icons/${this.iconSrc}'`
         : ""})"
       @click="${this.onCellClick}"
     >
       <div
-        class=" ${this.itemVisible && this.age <= 1
-          ? "background-animate"
+        class="${this.isHighlighted
+          ? "is-highlighted"
           : ""} color-overlay ${this.tileType}  ${this.isSelected
           ? "selected-inner"
           : ""}"
