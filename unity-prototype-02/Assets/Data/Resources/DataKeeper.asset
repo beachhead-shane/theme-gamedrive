@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678df5370013f4ca3a8ba68b2cb96c01, type: 3}
+  m_Name: DataKeeper
+  m_EditorClassIdentifier: 
+  ResourceAssets:
+  - ResourceType: 1
+    ResourceEntity: {fileID: 0}
+  - ResourceType: 2
+    ResourceEntity: {fileID: 0}
+  - ResourceType: 3
+    ResourceEntity: {fileID: 3495841634049587373, guid: 2853dbc1205084fda9d8bf6bfc07d8da, type: 3}
+  - ResourceType: 4
+    ResourceEntity: {fileID: 0}
+  - ResourceType: 5
+    ResourceEntity: {fileID: 8625292703045744056, guid: e38a344496377475e80907790e4f5cc2, type: 3}
+  - ResourceType: 6
+    ResourceEntity: {fileID: 0}
+  - ResourceType: 7
+    ResourceEntity: {fileID: 0}
+  - ResourceType: 8
+    ResourceEntity: {fileID: 0}
