@@ -13,7 +13,8 @@ namespace RenderHeads
         #endregion
 
         #region Private Properties
-
+        [SerializeField]
+        private ResourceEntity outputPile;
         #endregion
 
         #region Public Methods
@@ -24,36 +25,47 @@ namespace RenderHeads
         }
         public bool CanAcceptDraggable(IDraggableResource draggable)
         {
-            return Factory.CanAcceptResource(draggable.DraggedResource);
+            return outputPile == null && Factory.CanAcceptResource(draggable.DraggedResource);
         }
 
         public void DropDraggable(IDraggableResource draggable)
         {
             Factory.Consume(draggable.DraggedResource);
             draggable.BeConsumed();
+            Factory.Produce();
         }
 
         public void IsHoveredOver(bool highlighted)
         {
             Debug.Log($"[{this.gameObject.name}] is highlighted ({highlighted})");
         }
+
+        public void OnClick()
+        {
+            TryProduce();
+        }
         #endregion
 
         #region Private Methods
+        private void TryProduce()
+        {
+            if (outputPile == null)
+            {
+                Factory.Produce();
+            }
+        }
+
         private void OnProduce(Resource resource)
         {
             Debug.Log($"[{this.gameObject.name}] produced ({resource.Type})");
             if (DataKeeper.Instance.TryGetResourceEntity(resource.Type, out ResourceEntity resourceEntity))
             {
                 Debug.Log($"[{this.gameObject.name}] Spawned ({resource.Type})");
-                Instantiate(resourceEntity, ResourceSpawnPoint.position, ResourceSpawnPoint.rotation);
+                outputPile = Instantiate(resourceEntity, ResourceSpawnPoint.position, ResourceSpawnPoint.rotation);
             }
         }
 
-        public void OnClick()
-        {
-            Factory.Produce();
-        }
+
         #endregion
     }
 }

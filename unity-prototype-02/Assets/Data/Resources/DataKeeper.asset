@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResourceAssets:
   - ResourceType: 1
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: 1585161399936091053, guid: 870a4d53a8d8942e79592493467dc7e1, type: 3}
   - ResourceType: 2
     ResourceEntity: {fileID: 0}
   - ResourceType: 3

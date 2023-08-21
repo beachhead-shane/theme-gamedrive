@@ -13,70 +13,120 @@ namespace RenderHeads
         #endregion
 
         #region Private Properties
-        [SerializeField]
-        private bool isDragging;
         private IDraggableResource activeDraggable;
         private Vector3 activeDraggableStartPosition;
         private float draggingZ = -1;
         private Vector3 lastDragPosition;
-        private IDropTarget dropTarget;
-        private float clickTimer = 0f;
-        private float clickDuration = 0.1f;
 
+        private Vector2 startClickPosition = Vector2.zero;
+        [SerializeField]
+        private float clickDistanceThreshold = 1f;
         private enum PointerState
         {
             None,
             Click,
             Drag
         }
-
+        [SerializeField]
         private PointerState pointerState = PointerState.None;
         #endregion
 
         #region Public Methods
         public void Update()
         {
-            if (GetDropTarget(out dropTarget))
-            {
-                Debug.Log($"found drop target ({dropTarget})");
-            }
-
-
             if (Input.GetMouseButtonDown(0))
             {
-                if (GetDraggable(out IDraggableResource draggable))
-                {
-                    if (activeDraggable == null)
-                    {
-                        BeginDrag(draggable);
-                    }
-                }
+                HandleMouseButtonDown();
             }
-            if (Input.GetMouseButtonUp(0))
+            else if (Input.GetMouseButtonUp(0))
             {
-                if (activeDraggable != null)
-                {
-                    EndDrag();
-                }
+                HandleMouseButtonUp();
             }
-
-            if (Input.GetMouseButton(0))
+            else if (Input.GetMouseButton(0))
             {
-                if (activeDraggable != null)
-                {
-                    Drag();
-                }
-
-                pointerState = PointerState.None;
+                HandleMouseDrag();
             }
-
         }
- 
+
+        private void HandleMouseButtonDown()
+        {
+            startClickPosition = Input.mousePosition;
+        }
+
+        private void HandleMouseButtonUp()
+        {
+            if (IsClick() && NoActiveDragOperation())
+            {
+                PerformClickAction();
+                ResetPointerState();
+            }
+            else if (IsDrag())
+            {
+                EndDrag();
+                ResetPointerState();
+            }
+        }
+
+        private void HandleMouseDrag()
+        {
+            if (ShouldBeginDrag())
+            {
+                StartDragIfNeeded();
+            }
+
+            if (IsDrag())
+            {
+                Drag();
+            }
+        }
+
+        private bool IsClick()
+        {
+            return pointerState == PointerState.None && Vector2.Distance(startClickPosition, Input.mousePosition) < clickDistanceThreshold;
+        }
+
+        private bool IsDrag()
+        {
+            return pointerState == PointerState.Drag;
+        }
+
+        private bool NoActiveDragOperation()
+        {
+            return activeDraggable == null;
+        }
+
+        private bool ShouldBeginDrag()
+        {
+            return pointerState == PointerState.None;
+        }
+
+        private void PerformClickAction()
+        {
+            if (GetInteractable(out IInteractable interactable) && NoActiveDragOperation())
+            {
+                interactable.OnClick();
+            }
+        }
+
+        private void StartDragIfNeeded()
+        {
+            if (GetInteractable(out IDraggableResource draggable) && NoActiveDragOperation())
+            {
+                BeginDrag(draggable);
+                pointerState = PointerState.Drag;
+            }
+        }
+
+        private void ResetPointerState()
+        {
+            pointerState = PointerState.None;
+        }
+
+
 
         public void BeginDrag(IDraggableResource draggable)
         {
             Debug.Log($"BeginDrag!");
-            isDragging = true;
             activeDraggable = draggable;
             activeDraggableStartPosition = draggable.GetStartPosition();
             activeDraggable.BeginDrag();
@@ -94,11 +144,10 @@ namespace RenderHeads
         public void EndDrag()
         {
             Debug.Log($"EndDrag!");
-            isDragging = false;
             activeDraggable.Drag(new Vector3(lastDragPosition.x, lastDragPosition.y, activeDraggableStartPosition.z));
-            activeDraggable.EndDrag();
-            if (dropTarget!= null)
+            if (GetInteractable(out IDropTarget dropTarget))
             {
+                Debug.Log($"Found ({dropTarget})!");
                 if (dropTarget.CanAcceptDraggable(activeDraggable))
                 {
                     dropTarget.DropDraggable(activeDraggable);
@@ -113,37 +162,27 @@ namespace RenderHeads
 
                 activeDraggable.MoveTo(activeDraggableStartPosition);
             }
+
+            activeDraggable.EndDrag();
             activeDraggable = null;
         }
         #endregion
 
         #region Private Methods
-        private bool GetDraggable(out IDraggableResource draggable)
+
+        private bool GetInteractable<T>(out T interactable) where T : IInteractable
         {
-            draggable = null;
+            interactable = default;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 Transform hitTransform = hit.transform;
-                draggable = hitTransform.GetComponentInParent<IDraggableResource>();
+                // Debug.Log($"Hit ({hitTransform.name})!");
+                interactable = hitTransform.GetComponentInParent<T>();
             }
 
-            return draggable != null;
-        }
-
-        private bool GetDropTarget(out IDropTarget dropTarget)
-        {
-            dropTarget = null;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                Transform hitTransform = hit.transform;
-                dropTarget = hitTransform.GetComponentInParent<IDropTarget>();
-            }
-
-            return dropTarget != null;
+            return interactable != null;
         }
         #endregion
     }
