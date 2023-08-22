@@ -20,7 +20,7 @@ MonoBehaviour:
   - ResourceType: 3
     ResourceEntity: {fileID: 3495841634049587373, guid: 2853dbc1205084fda9d8bf6bfc07d8da, type: 3}
   - ResourceType: 4
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: -3301501010505835533, guid: db0fca354c0c2456496cd10101f1930b, type: 3}
   - ResourceType: 5
     ResourceEntity: {fileID: 8625292703045744056, guid: e38a344496377475e80907790e4f5cc2, type: 3}
   - ResourceType: 6
