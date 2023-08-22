@@ -62,6 +62,7 @@ namespace RenderHeads
             {
                 Debug.Log($"[{this.gameObject.name}] Spawned ({resource.Type})");
                 outputPile = Instantiate(resourceEntity, ResourceSpawnPoint.position, ResourceSpawnPoint.rotation);
+                outputPile.Init(resource);
             }
         }
 

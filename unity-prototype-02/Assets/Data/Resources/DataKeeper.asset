@@ -16,7 +16,7 @@ MonoBehaviour:
   - ResourceType: 1
     ResourceEntity: {fileID: 1585161399936091053, guid: 870a4d53a8d8942e79592493467dc7e1, type: 3}
   - ResourceType: 2
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: 1993089012973747907, guid: 4c7da7fa630ae4bdd8df149d37ab4c88, type: 3}
   - ResourceType: 3
     ResourceEntity: {fileID: 3495841634049587373, guid: 2853dbc1205084fda9d8bf6bfc07d8da, type: 3}
   - ResourceType: 4
@@ -24,8 +24,8 @@ MonoBehaviour:
   - ResourceType: 5
     ResourceEntity: {fileID: 8625292703045744056, guid: e38a344496377475e80907790e4f5cc2, type: 3}
   - ResourceType: 6
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: -3207955151294558302, guid: 60b619977f8aa4129976ce43c10ac684, type: 3}
   - ResourceType: 7
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: 1163826502749859267, guid: 6217bf10c6c8442298ce7a152643f02c, type: 3}
   - ResourceType: 8
-    ResourceEntity: {fileID: 0}
+    ResourceEntity: {fileID: 4924451623305964701, guid: 1aa94c88f0f8f440f947006af332bba5, type: 3}

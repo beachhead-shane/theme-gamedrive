@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class MeatEntity : ResourceEntity
+    public class WheatEntity : ResourceEntity
     {
         #region Public Properties
 

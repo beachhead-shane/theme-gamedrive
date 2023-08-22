@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class MeatEntity : ResourceEntity
+    public class BakeryFactory : FactoryEntity
     {
         #region Public Properties
 
@@ -16,7 +16,11 @@ namespace RenderHeads
         #endregion
 
         #region Public Methods
-
+        public void Start()
+        {
+            Init();
+            Factory.AddBehaviour(new FactoryBehaviourFlourToBread());
+        }
         #endregion
 
         #region Private Methods

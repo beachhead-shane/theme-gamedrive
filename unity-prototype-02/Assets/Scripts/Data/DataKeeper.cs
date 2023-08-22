@@ -57,6 +57,9 @@ namespace RenderHeads
                 }
 			}
 
+
+			Debug.Assert(resourceEntity != null, $"[DataKeeper] Could not find entity for resource ({resourceType})");
+
 			return resourceEntity != null;
 		}
 		#endregion

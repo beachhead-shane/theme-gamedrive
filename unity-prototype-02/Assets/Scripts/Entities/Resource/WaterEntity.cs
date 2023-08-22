@@ -16,10 +16,7 @@ namespace RenderHeads
         #endregion
 
         #region Public Methods
-        public void Start()
-        {
-            Init(Resource.Default(ResourceType.Water));
-        }
+
         #endregion
 
         #region Private Methods
