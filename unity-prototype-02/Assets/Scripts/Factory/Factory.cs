@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace RenderHeads
 {
@@ -83,15 +84,24 @@ namespace RenderHeads
         public void Produce()
         {
             Debug.Assert(Behaviours.Count > 0, "[Factory] No Behaviours set!");
-
+            List<Resource> outputs = new List<Resource>();
             foreach (var b in Behaviours)
             {
-                Resource r = b.Run(InputPile);
+                bool useOutputs = outputs.Count > 0;
+
+                Resource r = b.Run((useOutputs)?outputs:InputPile);
+
                 if (r.Type != ResourceType.None)
                 {
-                    onproduceAction(r);
-                    break;
+                    outputs.Add(r);
                 }
+            }
+
+            List<Resource> cleanedOutputs = outputs.FindAll(x => x.Type != ResourceType.None);
+
+            if (cleanedOutputs.Count > 0 && cleanedOutputs[0].Type != ResourceType.None)
+            {
+                onproduceAction(cleanedOutputs[0]);
             }
         }
         #endregion
