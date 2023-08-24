@@ -29,3 +29,5 @@ MonoBehaviour:
     ResourceEntity: {fileID: 1163826502749859267, guid: 6217bf10c6c8442298ce7a152643f02c, type: 3}
   - ResourceType: 8
     ResourceEntity: {fileID: 4924451623305964701, guid: 1aa94c88f0f8f440f947006af332bba5, type: 3}
+  - ResourceType: 9
+    ResourceEntity: {fileID: -1404849772950893286, guid: 75c297bdaf9e54934b82e4d429725657, type: 3}

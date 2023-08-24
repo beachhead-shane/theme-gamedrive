@@ -141,10 +141,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3495841634049587372}
-  - component: {fileID: 6843297266551613}
-  - component: {fileID: -3301501010505835533}
+  - component: {fileID: -1404849772950893286}
   m_Layer: 0
-  m_Name: Human
+  m_Name: Poop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,7 +165,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6843297266551613
+--- !u!114 &-1404849772950893286
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -175,29 +174,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3495841634049587374}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8282de8778e94243b1f278ba21b9b58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Factory:
-    InputPile: []
-  ResourceSpawnPoint: {fileID: 3495841634049587372}
-  outputPile: {fileID: 0}
---- !u!114 &-3301501010505835533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3495841634049587374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6de09437bef64737b279830aef7e0f6, type: 3}
+  m_Script: {fileID: 11500000, guid: 53cc6d6ca83d54153b3d8c51e509ecab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Resource:
     Type: 0
-  Factory:
-    InputPile: []
 --- !u!1 &3590223243768406058
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +279,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Human
+  m_text: Poop
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

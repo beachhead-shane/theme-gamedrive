@@ -17,6 +17,7 @@ namespace RenderHeads
         Burger,
         Flour,
         Bread,
+        Poop,
     }
 
     public enum AspectType
@@ -27,7 +28,8 @@ namespace RenderHeads
         Liquid,
         Food,
         Corruption,
-        CookingIngredient
+        CookingIngredient,
+        Waste
     }
 
     [System.Serializable]
@@ -81,6 +83,9 @@ namespace RenderHeads
                     break;
                 case ResourceType.Bread:
                     aspects.Add(AspectType.Food, 20);
+                    break;
+                case ResourceType.Poop:
+                    aspects.Add(AspectType.Corruption, 20);
                     break;
                 default:
                     return new Resource(ResourceType.None);

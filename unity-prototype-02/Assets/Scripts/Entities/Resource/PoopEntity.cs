@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class RanchFactory : FactoryEntity
+    public class PoopEntity : ResourceEntity
     {
         #region Public Properties
 
@@ -16,11 +16,7 @@ namespace RenderHeads
         #endregion
 
         #region Public Methods
-        public void Start()
-        {
-            Init();
-            Factory.AddBehaviour(new FactoryBehaviourWheatWaterToCow());
-        }
+
         #endregion
 
         #region Private Methods

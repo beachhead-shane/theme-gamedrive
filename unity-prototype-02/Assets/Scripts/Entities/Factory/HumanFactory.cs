@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class RanchFactory : FactoryEntity
+    public class HumanFactory : FactoryEntity
     {
         #region Public Properties
 
@@ -19,7 +19,8 @@ namespace RenderHeads
         public void Start()
         {
             Init();
-            Factory.AddBehaviour(new FactoryBehaviourWheatWaterToCow());
+            Factory.AddBehaviour(new FactoryBehaviourBurgerToPoop());
+            Factory.Consume(this.GetComponent<HumanEntity>().Resource);
         }
         #endregion
 
