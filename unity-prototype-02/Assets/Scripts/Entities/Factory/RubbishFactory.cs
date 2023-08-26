@@ -19,7 +19,7 @@ namespace RenderHeads
         public void Start()
         {
             Init();
-            Factory.AddBehaviour(new FactoryBehaviourStockpileResource());
+            Factory.AddBehaviour(new FactoryBehaviourRubbishStockpile());
 
             if (SpawnResourceOnAwake)
             {

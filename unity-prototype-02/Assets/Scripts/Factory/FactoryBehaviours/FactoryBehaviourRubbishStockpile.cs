@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class FactoryBehaviourStockpileResource : FactoryBehaviour, IFactoryBehaviour
+    public class FactoryBehaviourRubbishStockpile : FactoryBehaviour, IFactoryBehaviour
     {
         public bool CanAcceptResource(ResourceType resourcetype)
         {
-            return true;
+            return resourcetype != ResourceType.Human && resourcetype != ResourceType.Cow;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)
@@ -19,7 +19,9 @@ namespace RenderHeads
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Debug.Log($"[{this.GetType()}] Manufacturing");
-            return Resource.Default();
+            Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
+
+            return new Resource(ResourceType.Cow, aspects);
         }
 
         public Resource Run(List<Resource> listOfInputs)
