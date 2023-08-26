@@ -326,6 +326,68 @@ Transform:
   m_Father: {fileID: 1294006189}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &95373117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 95373118}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &95373118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95373117}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1671081866}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &146780999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 146781000}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &146781000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146780999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 977685929}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &172707366
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +483,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 1080476847}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 0}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 0
 --- !u!4 &248511576
 Transform:
   m_ObjectHideFlags: 0
@@ -602,7 +666,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 1924623937}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 1584556105}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 1
 --- !u!4 &373562228
 Transform:
   m_ObjectHideFlags: 0
@@ -617,6 +683,7 @@ Transform:
   m_Children:
   - {fileID: 1145834885}
   - {fileID: 1924623937}
+  - {fileID: 1584556105}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1260,6 +1327,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &580456853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 580456854}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &580456854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 580456853}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1294006189}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &722149420
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,6 +1690,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1890866617}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &811649058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811649059}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &811649059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811649058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1890866617}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &888645025
 GameObject:
@@ -1971,7 +2100,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 1067541518}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 0}
+  SpawnResourceOnAwake: 1
+  SpawnWorkerOnAwake: 0
 --- !u!4 &936964972
 Transform:
   m_ObjectHideFlags: 0
@@ -2021,7 +2152,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 1731170961}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 146781000}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 1
 --- !u!4 &977685929
 Transform:
   m_ObjectHideFlags: 0
@@ -2036,6 +2169,7 @@ Transform:
   m_Children:
   - {fileID: 1591121661}
   - {fileID: 1731170961}
+  - {fileID: 146781000}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2711,6 +2845,50 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1257794195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1257794197}
+  - component: {fileID: 1257794196}
+  m_Layer: 0
+  m_Name: ResourcePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1257794196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257794195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea559d708560420c9f3db0f39115b91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1257794197
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257794195}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1294006187
 GameObject:
   m_ObjectHideFlags: 0
@@ -2743,7 +2921,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 88549964}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 580456854}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 1
 --- !u!4 &1294006189
 Transform:
   m_ObjectHideFlags: 0
@@ -2758,6 +2938,7 @@ Transform:
   m_Children:
   - {fileID: 377680093}
   - {fileID: 88549964}
+  - {fileID: 580456854}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3230,6 +3411,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1584556104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1584556105}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1584556105
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584556104}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 373562228}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1591121660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3294,7 +3506,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 1862158722}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 95373118}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 1
 --- !u!4 &1671081866
 Transform:
   m_ObjectHideFlags: 0
@@ -3309,6 +3523,7 @@ Transform:
   m_Children:
   - {fileID: 172707367}
   - {fileID: 1862158722}
+  - {fileID: 95373118}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3344,7 +3559,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 724208230}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 0}
+  SpawnResourceOnAwake: 1
+  SpawnWorkerOnAwake: 1
 --- !u!4 &1697483076
 Transform:
   m_ObjectHideFlags: 0
@@ -3586,6 +3803,7 @@ Transform:
   m_Children:
   - {fileID: 339943204}
   - {fileID: 809308360}
+  - {fileID: 811649059}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3604,7 +3822,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 809308360}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 811649059}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 1
 --- !u!1 &1924623936
 GameObject:
   m_ObjectHideFlags: 0
@@ -3668,7 +3888,9 @@ MonoBehaviour:
   Factory:
     InputPile: []
   ResourceSpawnPoint: {fileID: 226439035}
-  outputPile: {fileID: 0}
+  WorkerPoint: {fileID: 2118142693}
+  SpawnResourceOnAwake: 0
+  SpawnWorkerOnAwake: 0
 --- !u!4 &1987875126
 Transform:
   m_ObjectHideFlags: 0
@@ -3683,6 +3905,38 @@ Transform:
   m_Children:
   - {fileID: 1062319342}
   - {fileID: 226439035}
+  - {fileID: 2118142693}
   m_Father: {fileID: 0}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2118142692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2118142693}
+  m_Layer: 0
+  m_Name: WorkerPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2118142693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118142692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1987875126}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

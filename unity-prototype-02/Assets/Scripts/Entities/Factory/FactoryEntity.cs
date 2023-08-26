@@ -10,11 +10,14 @@ namespace RenderHeads
         #region Public Properties
         public Factory Factory;
         public Transform ResourceSpawnPoint;
+        public Transform WorkerPoint;
+
+        public bool SpawnResourceOnAwake = false;
+        public bool SpawnWorkerOnAwake = true;
         #endregion
 
         #region Private Properties
-        [SerializeField]
-        private ResourceEntity outputPile;
+
         #endregion
 
         #region Public Methods
@@ -22,17 +25,45 @@ namespace RenderHeads
         {
             Factory = new Factory(OnProduce);
 
+            if (SpawnWorkerOnAwake && RequiresWorker())
+            {
+                if (ResourcePool.Instance.TryRequestResource(Resource.Default(ResourceType.Human), WorkerPoint, out ResourceEntity worker))
+                {
+                    ResourcePool.Instance.AssignWorkerToFactory(this, worker as HumanEntity);
+                }
+            }
         }
         public bool CanAcceptDraggable(IDraggableResource draggable)
         {
-            return outputPile == null && Factory.CanAcceptResource(draggable.DraggedResource);
+            if (RequiresWorker())
+            {
+                if (draggable is HumanEntity)
+                {
+                    return true;
+                }
+            }
+            else if (!RequiresWorker() && !HasOutputSlotFilled() && Factory.CanAcceptResource(draggable.DraggedResource))
+            {
+                return true;
+            }
+            return false;
         }
 
         public void DropDraggable(IDraggableResource draggable)
         {
-            Factory.Consume(draggable.DraggedResource);
-            draggable.BeConsumed();
-            Factory.Produce();
+            if (RequiresWorker())
+            {
+                if (draggable is HumanEntity)
+                {
+                    TryAttachWorker(draggable as HumanEntity);
+                }
+            }
+            else
+            {
+                Factory.Consume(draggable.DraggedResource);
+                draggable.BeConsumed();
+                Factory.Produce();
+            }
         }
 
         public void IsHoveredOver(bool highlighted)
@@ -49,7 +80,7 @@ namespace RenderHeads
         #region Private Methods
         private void TryProduce()
         {
-            if (outputPile == null)
+            if (!HasOutputSlotFilled())
             {
                 Factory.Produce();
             }
@@ -58,15 +89,43 @@ namespace RenderHeads
         private void OnProduce(Resource resource)
         {
             Debug.Log($"[{this.gameObject.name}] produced ({resource.Type})");
-            if (DataKeeper.Instance.TryGetResourceEntity(resource.Type, out ResourceEntity resourceEntity))
+
+            if (ResourcePool.Instance.TryRequestResource(resource, ResourceSpawnPoint,  out ResourceEntity resourceEntity))
             {
                 Debug.Log($"[{this.gameObject.name}] Spawned ({resource.Type})");
-                outputPile = Instantiate(resourceEntity, ResourceSpawnPoint.position, ResourceSpawnPoint.rotation);
-                outputPile.Init(resource);
+                ResourcePool.Instance.AssignResourceOutputToFactory(this, resourceEntity);
             }
         }
 
+        protected virtual bool RequiresWorker()
+        {
+            return !HasWorker();
+        }
 
+        protected bool TryAttachWorker(HumanEntity humanEntity)
+        {
+            if (!RequiresWorker())
+            {
+                return false;
+            }
+
+            ResourcePool.Instance.AssignWorkerToFactory(this, humanEntity);
+
+            humanEntity.MoveTo(WorkerPoint.position);
+            return true;
+        }
+
+        protected bool HasOutputSlotFilled()
+        {
+            return ResourcePool.Instance.GetResourceOutput(this, out ResourceEntity resourceEntity);
+        }
+
+        protected bool HasWorker()
+        {
+            return ResourcePool.Instance.GetFactoryWorker(this, out HumanEntity humanEntity);
+        }
+
+        protected abstract void ForceResourceSpawn();
         #endregion
     }
 }

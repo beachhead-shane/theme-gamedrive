@@ -20,11 +20,25 @@ namespace RenderHeads
         {
             Init();
             Factory.AddBehaviour(new FactoryBehaviourWheatWaterToCow());
+
+            if (SpawnResourceOnAwake)
+            {
+                ForceResourceSpawn();
+            }
         }
         #endregion
 
         #region Private Methods
-
+        protected override void ForceResourceSpawn()
+        {
+            List<Resource> resources = new List<Resource>()
+            {
+                Resource.Default(ResourceType.Wheat),
+                Resource.Default(ResourceType.Water)
+            };
+            Factory.Consume(resources);
+            Factory.Produce();
+        }
         #endregion
     }
 }

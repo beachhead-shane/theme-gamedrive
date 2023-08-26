@@ -150,10 +150,12 @@ namespace RenderHeads
                 Debug.Log($"Found ({dropTarget})!");
                 if (dropTarget.CanAcceptDraggable(activeDraggable))
                 {
+                    Debug.Log($"Can accept ({dropTarget})!");
                     dropTarget.DropDraggable(activeDraggable);
 
                 } else
                 {
+                    Debug.Log($"Can not accept ({dropTarget})!");
                     activeDraggable.MoveTo(activeDraggableStartPosition);
                 }
 

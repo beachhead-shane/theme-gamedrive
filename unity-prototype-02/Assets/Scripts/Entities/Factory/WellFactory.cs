@@ -20,11 +20,24 @@ namespace RenderHeads
         {
             Init();
             Factory.AddBehaviour(new FactoryBehaviourCollectWater());
+
+            if (SpawnResourceOnAwake)
+            {
+                ForceResourceSpawn();
+            }
         }
         #endregion
 
         #region Private Methods
+        protected override bool RequiresWorker()
+        {
+            return false;
+        }
 
+        protected override void ForceResourceSpawn()
+        {
+            Factory.Produce();
+        }
         #endregion
     }
 }

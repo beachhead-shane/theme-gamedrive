@@ -21,10 +21,19 @@ namespace RenderHeads
             Init();
             Factory.AddBehaviour(new FactoryBehaviourFlourToBread());
         }
+
         #endregion
 
         #region Private Methods
-
+        protected override void ForceResourceSpawn()
+        {
+            List<Resource> resources = new List<Resource>()
+            {
+                Resource.Default(ResourceType.Wheat)
+            };
+            Factory.Consume(resources);
+            Factory.Produce();
+        }
         #endregion
     }
 }

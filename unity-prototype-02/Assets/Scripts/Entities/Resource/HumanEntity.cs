@@ -8,6 +8,7 @@ namespace RenderHeads
     public class HumanEntity : ResourceEntity
     {
         #region Public Properties
+
         #endregion
 
         #region Private Properties

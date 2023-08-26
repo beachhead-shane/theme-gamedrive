@@ -83,7 +83,7 @@ namespace RenderHeads
 
         public void BeConsumed()
         {
-            Destroy(this.gameObject);
+            ResourcePool.Instance.DestroyResource(this);
         }
 
 
