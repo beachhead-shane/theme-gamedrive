@@ -15,7 +15,10 @@ namespace RenderHeads
         #region Private Properties
         private IDraggableResource activeDraggable;
         private Vector3 activeDraggableStartPosition;
+        [SerializeField]
         private float draggingZ = -1;
+        [SerializeField]
+        private float dropZ = 0;
         private Vector3 lastDragPosition;
 
         private Vector2 startClickPosition = Vector2.zero;
@@ -144,7 +147,7 @@ namespace RenderHeads
         public void EndDrag()
         {
             Debug.Log($"EndDrag!");
-            activeDraggable.Drag(new Vector3(lastDragPosition.x, lastDragPosition.y, activeDraggableStartPosition.z));
+            activeDraggable.Drag(new Vector3(lastDragPosition.x, lastDragPosition.y, dropZ));
             if (GetInteractable(out IDropTarget dropTarget))
             {
                 Debug.Log($"Found ({dropTarget})!");

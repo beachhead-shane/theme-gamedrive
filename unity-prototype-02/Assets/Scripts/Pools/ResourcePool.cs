@@ -18,7 +18,7 @@ namespace RenderHeads
                 return _instance;
             }
         }
-
+        public float ResourceZ = 0f;
         #endregion
 
         #region Private Properties
@@ -41,7 +41,8 @@ namespace RenderHeads
             bool result = DataKeeper.Instance.TryGetResourceEntity(resource.Type, out ResourceEntity foundResourceEntity);
             if (result)
             {
-                resourceEntity = Instantiate(foundResourceEntity, spawnTransform.position, spawnTransform.rotation, this.transform);
+                Vector3 spawnPosition = new Vector3(spawnTransform.position.x, spawnTransform.position.y, ResourceZ);
+                resourceEntity = Instantiate(foundResourceEntity, spawnPosition, spawnTransform.rotation, this.transform);
                 resourceEntity.Init(resource);
 
                 _activeResourceEntities.Add(resourceEntity);
