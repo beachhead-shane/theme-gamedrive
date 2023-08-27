@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourAcceptPoison : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Poison;
+            return resource.Type == ResourceType.Poison;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

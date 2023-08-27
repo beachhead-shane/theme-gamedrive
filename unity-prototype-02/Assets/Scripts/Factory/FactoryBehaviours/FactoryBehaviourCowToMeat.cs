@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourCowToMeat : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Cow;
+            return resource.Type == ResourceType.Cow;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

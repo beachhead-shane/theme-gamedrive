@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourBurgerToPoop : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Burger;
+            return resource.Type == ResourceType.Burger;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)
@@ -19,6 +19,15 @@ namespace RenderHeads
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Debug.Log($"[{this.GetType()}] Manufacturing");
+
+            if (selectedInputs[0].HasAspect(AspectType.Corruption))
+            {
+                if (selectedInputs[0].Aspects[AspectType.Corruption] > 101)
+                {
+                    return Resource.Default();
+                }
+            }
+
             Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
             aspects.Add(AspectType.Corruption, 20);
 

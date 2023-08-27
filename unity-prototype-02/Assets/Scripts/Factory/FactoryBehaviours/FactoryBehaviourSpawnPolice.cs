@@ -4,23 +4,25 @@ using UnityEngine;
 
 namespace RenderHeads
 {
-    public class FactoryBehaviourPoisonToDead : FactoryBehaviour, IFactoryBehaviour
+    public class FactoryBehaviourSpawnPolice : FactoryBehaviour, IFactoryBehaviour
     {
         public bool CanAcceptResource(Resource resource)
         {
-            return resource.Type == ResourceType.Poison;
+            return false;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)
         {
-            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Poison);
+            return true;
         }
 
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Debug.Log($"[{this.GetType()}] Manufacturing");
+            Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
+            aspects.Add(AspectType.Corruption, -100);
 
-            return new Resource(ResourceType.DeadHuman);
+            return new Resource(ResourceType.Human, aspects);
         }
 
         public Resource Run(List<Resource> listOfInputs)
@@ -31,10 +33,9 @@ namespace RenderHeads
             if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
-                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Poison);
+                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.None);
                 selectedInputs.Add(resource);
                 listOfInputs.Remove(resource);
-
                 r = Manufacture(selectedInputs);
             }
 

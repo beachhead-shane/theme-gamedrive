@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourWheatToFlour : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Wheat;
+            return resource.Type == ResourceType.Wheat;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

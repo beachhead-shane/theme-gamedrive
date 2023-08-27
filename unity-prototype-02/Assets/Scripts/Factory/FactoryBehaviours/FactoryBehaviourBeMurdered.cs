@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
 
 namespace RenderHeads
 {
-    public class FactoryBehaviourPoisonToDead : FactoryBehaviour, IFactoryBehaviour
+    public class FactoryBehaviourBeMurdered : FactoryBehaviour, IFactoryBehaviour
     {
         public bool CanAcceptResource(Resource resource)
         {
-            return resource.Type == ResourceType.Poison;
+            return resource.Type == ResourceType.Human && resource.HasAspect(AspectType.Corruption) && resource.Aspects[AspectType.Corruption] > 100;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)
         {
-            return BehaviourHelper.HasInput(listOfInputs, ResourceType.Poison);
+            return listOfInputs[0].Type == ResourceType.Human && listOfInputs[0].HasAspect(AspectType.Corruption) && listOfInputs[0].Aspects[AspectType.Corruption] > 100; ;
         }
-
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Debug.Log($"[{this.GetType()}] Manufacturing");
-
             return new Resource(ResourceType.DeadHuman);
         }
 
@@ -31,7 +30,7 @@ namespace RenderHeads
             if (CanManufacture(listOfInputs))
             {
                 List<Resource> selectedInputs = new List<Resource>();
-                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Poison);
+                Resource resource = BehaviourHelper.GetFirstInput(listOfInputs, ResourceType.Human);
                 selectedInputs.Add(resource);
                 listOfInputs.Remove(resource);
 

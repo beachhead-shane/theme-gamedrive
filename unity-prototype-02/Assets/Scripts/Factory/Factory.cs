@@ -61,7 +61,7 @@ namespace RenderHeads
         {
             foreach (var b in Behaviours)
             {
-                if (b.CanAcceptResource(resource.Type))
+                if (b.CanAcceptResource(resource))
                 {
                     return true;
                 }

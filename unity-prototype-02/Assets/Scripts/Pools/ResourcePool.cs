@@ -28,6 +28,7 @@ namespace RenderHeads
         private List<FactoryResourceConnection> _factoryOutputs = new List<FactoryResourceConnection>();
         private List<FactoryWorkerConnection> _factoryWorkers = new List<FactoryWorkerConnection>();
 
+        private System.Action<Resource> onResourceRequestAction = delegate {};
         #endregion
 
         #region Public Methods
@@ -35,6 +36,12 @@ namespace RenderHeads
         {
             _instance = this;
         }
+
+        public void AddResourceRequestAction(System.Action<Resource> onResourceRequest)
+        {
+            onResourceRequestAction += onResourceRequest;
+        }
+
         public bool TryRequestResource(Resource resource, Transform spawnTransform, out ResourceEntity resourceEntity)
         {
             resourceEntity = null;
@@ -46,6 +53,8 @@ namespace RenderHeads
                 resourceEntity.Init(resource);
 
                 _activeResourceEntities.Add(resourceEntity);
+
+                onResourceRequestAction(resource);
             }
             return result;
         }

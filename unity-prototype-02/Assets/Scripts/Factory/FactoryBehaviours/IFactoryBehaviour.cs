@@ -5,7 +5,7 @@ namespace RenderHeads
 {
     public interface IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype);
+        public bool CanAcceptResource(Resource resource);
         public bool CanManufacture(List<Resource> listOfInputs);
         public Resource Run(List<Resource> listOfInputs);
     }

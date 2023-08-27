@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourPoopToPoison : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Poop;
+            return resource.Type == ResourceType.Poop;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

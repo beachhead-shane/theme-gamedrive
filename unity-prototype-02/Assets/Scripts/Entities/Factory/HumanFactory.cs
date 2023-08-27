@@ -23,6 +23,7 @@ namespace RenderHeads
             Init();
             Factory.AddBehaviour(new FactoryBehaviourPoisonToDead());
             Factory.AddBehaviour(new FactoryBehaviourBurgerToPoop());
+            Factory.AddBehaviour(new FactoryBehaviourBeMurdered());
             Factory.Consume(this.GetComponent<HumanEntity>().Resource);
 
             if (SpawnResourceOnAwake)

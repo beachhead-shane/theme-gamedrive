@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourFlourToBread : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.Flour;
+            return resource.Type == ResourceType.Flour;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

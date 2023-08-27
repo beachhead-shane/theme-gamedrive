@@ -6,9 +6,9 @@ namespace RenderHeads
 {
     public class FactoryBehaviourDeadToFlour : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
-            return resourcetype == ResourceType.DeadHuman;
+            return resource.Type == ResourceType.DeadHuman;
         }
 
         public bool CanManufacture(List<Resource> listOfInputs)

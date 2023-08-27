@@ -6,7 +6,7 @@ namespace RenderHeads
 {
     public class FactoryBehaviourSpawnHuman : FactoryBehaviour, IFactoryBehaviour
     {
-        public bool CanAcceptResource(ResourceType resourcetype)
+        public bool CanAcceptResource(Resource resource)
         {
             return false;
         }
