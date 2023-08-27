@@ -25,6 +25,10 @@ namespace RenderHeads
         public void EndDrag();
         public void MoveTo(Vector3 position);
         public void BeConsumed();
+        public virtual IFactoryBehaviour[] GetFactoryBehaviours()
+        {
+            return new IFactoryBehaviour[] { };
+        }
         #endregion
 
         #region Private Methods

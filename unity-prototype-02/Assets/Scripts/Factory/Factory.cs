@@ -27,10 +27,12 @@ namespace RenderHeads
 
         #region Private Properties
         protected List<IFactoryBehaviour> Behaviours = new List<IFactoryBehaviour>();
+        private Action<List<Resource>> onpreproduceAction;
         private Action<Resource> onproduceAction;
 
-        public Factory(Action<Resource> onProduce)
+        public Factory(Action<List<Resource>> onpreproduce, Action<Resource> onProduce)
         {
+            onpreproduceAction = onpreproduce;
             onproduceAction = onProduce;
         }
         #endregion
@@ -83,6 +85,7 @@ namespace RenderHeads
 
         public void Produce()
         {
+            onpreproduceAction(InputPile);
             Debug.Assert(Behaviours.Count > 0, "[Factory] No Behaviours set!");
             List<Resource> outputs = new List<Resource>();
             foreach (var b in Behaviours)

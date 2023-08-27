@@ -20,6 +20,7 @@ namespace RenderHeads
         {
             Init();
             Factory.AddBehaviour(new FactoryBehaviourRubbishStockpile());
+            Factory.AddBehaviour(new FactoryBehaviourPoopToPoison());
 
             if (SpawnResourceOnAwake)
             {
@@ -36,12 +37,12 @@ namespace RenderHeads
 
         protected override void ForceResourceSpawn()
         {
-            //List<Resource> resources = new List<Resource>()
-            //{
-            //    Resource.Default(ResourceType.Cow),
-            //};
-            //Factory.Consume(resources);
-            //Factory.Produce();
+            List<Resource> resources = new List<Resource>()
+            {
+                Resource.Default(ResourceType.Poop),
+            };
+            Factory.Consume(resources);
+            Factory.Produce();
         }
         #endregion
     }

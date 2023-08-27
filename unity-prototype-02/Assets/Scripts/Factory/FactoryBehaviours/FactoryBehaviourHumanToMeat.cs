@@ -18,8 +18,9 @@ namespace RenderHeads
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Console.WriteLine($"[{this.GetType()}] Manufacturing");
-            Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
+            Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
             aspects.Add(AspectType.Corruption, 100);
+            aspects.Add(AspectType.Human, 1);
 
             return new Resource(ResourceType.Meat, aspects);
         }

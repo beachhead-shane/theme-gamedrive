@@ -101,7 +101,7 @@ namespace RenderHeads
 
         private bool ShouldBeginDrag()
         {
-            return pointerState == PointerState.None;
+            return pointerState == PointerState.None && Vector2.Distance(startClickPosition, Input.mousePosition) > clickDistanceThreshold;
         }
 
         private void PerformClickAction()
@@ -131,6 +131,7 @@ namespace RenderHeads
         public void BeginDrag(IDraggableResource draggable)
         {
             Debug.Log($"BeginDrag!");
+            dropTarget = null;
             activeDraggable = draggable;
             activeDraggableStartPosition = draggable.GetStartPosition();
             activeDraggable.BeginDrag();
@@ -166,8 +167,9 @@ namespace RenderHeads
                 if (dropTarget != null)
                 {
                     dropTarget.IsHoveredOver(false);
-                    dropTarget = null;
                 }
+
+                dropTarget = null;
             }
         }
 
@@ -187,14 +189,12 @@ namespace RenderHeads
                 else
                 {
                     Debug.Log($"Can not accept ({dropTarget})!");
-                    activeDraggable.MoveTo(activeDraggableStartPosition);
+                    activeDraggable.MoveTo(new Vector3(activeDraggableStartPosition.x, activeDraggableStartPosition.y, dropZ));
                 }
-
             }
             else
             {
-
-                activeDraggable.MoveTo(activeDraggableStartPosition);
+                activeDraggable.MoveTo(new Vector3(activeDraggableStartPosition.x, activeDraggableStartPosition.y, dropZ));
             }
 
             activeDraggable.EndDrag();
@@ -203,8 +203,8 @@ namespace RenderHeads
             if (dropTarget != null)
             {
                 dropTarget.IsHoveredOver(false);
-                dropTarget = null;
             }
+            dropTarget = null;
         }
         #endregion
 

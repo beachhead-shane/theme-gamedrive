@@ -18,6 +18,8 @@ namespace RenderHeads
         Flour,
         Bread,
         Poop,
+        Poison,
+        DeadHuman,
     }
 
     public enum AspectType
@@ -73,7 +75,6 @@ namespace RenderHeads
                     aspects.Add(AspectType.Human, 1);
                     break;
                 case ResourceType.Meat:
-                    aspects.Add(AspectType.Animal, 1);
                     break;
                 case ResourceType.Burger:
                     aspects.Add(AspectType.Food, 100);
@@ -86,6 +87,12 @@ namespace RenderHeads
                     break;
                 case ResourceType.Poop:
                     aspects.Add(AspectType.Corruption, 20);
+                    break;
+                case ResourceType.Poison:
+                    aspects.Add(AspectType.Corruption, 100);
+                    break;
+                case ResourceType.DeadHuman:
+                    aspects.Add(AspectType.Corruption, 100);
                     break;
                 default:
                     return new Resource(ResourceType.None);

@@ -19,7 +19,26 @@ namespace RenderHeads
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
             Debug.Log($"[{this.GetType()}] Manufacturing");
-            Dictionary<AspectType, int> aspects = selectedInputs[0].Aspects;
+            Dictionary<AspectType, int> aspects = new Dictionary<AspectType, int>();
+
+            for (int i = 0; i < selectedInputs.Count; i++)
+            {
+                foreach (var a in selectedInputs[i].Aspects.Keys)
+                {
+                    if (!aspects.ContainsKey(a))
+                    {
+                        aspects.Add(a, selectedInputs[i].Aspects[a]);
+                    }
+                    else
+                    {
+                        aspects[a] += selectedInputs[i].Aspects[a];
+                    }
+                }
+            }
+
+            aspects.Remove(AspectType.Liquid);
+            aspects.Remove(AspectType.Plant);
+            aspects.Remove(AspectType.Animal);
 
             return new Resource(ResourceType.Cow, aspects);
         }

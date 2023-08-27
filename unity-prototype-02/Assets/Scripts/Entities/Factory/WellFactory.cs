@@ -20,6 +20,7 @@ namespace RenderHeads
         {
             Init();
             Factory.AddBehaviour(new FactoryBehaviourCollectWater());
+            Factory.AddBehaviour(new FactoryBehaviourAcceptPoison());
 
             if (SpawnResourceOnAwake)
             {

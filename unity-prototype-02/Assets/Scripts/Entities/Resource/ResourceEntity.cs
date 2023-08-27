@@ -20,6 +20,8 @@ namespace RenderHeads
         private Vector3 targetPosition;
         [SerializeField]
         private SpriteRenderer spriteRenderer;
+        [SerializeField]
+        private AspectSpriteData[] aspectSpriteData;
         #endregion
 
         #region Public Methods
@@ -27,6 +29,7 @@ namespace RenderHeads
         {
             Resource = resource;
             targetPosition = this.transform.position;
+            UpdateSprite();
         }
 
         public void Update()
@@ -64,7 +67,25 @@ namespace RenderHeads
 
         public void OnClick()
         {
+            Debug.Log($"[{this.gameObject.name}] Clicked!");
+            Debug.Log(Resource.ToString());
+        }
 
+        public virtual IFactoryBehaviour[] GetFactoryBehaviours()
+        {
+            return new IFactoryBehaviour[] { };
+        }
+
+        public void UpdateSprite()
+        {
+            for (int i = 0; i < aspectSpriteData.Length; i++)
+            {
+                if (aspectSpriteData[i].AspectMatch(Resource.Aspects))
+                {
+                    spriteRenderer.sprite = aspectSpriteData[i].Sprite;
+                    break;
+                }
+            }
         }
         #endregion
 

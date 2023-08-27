@@ -64,6 +64,12 @@ namespace RenderHeads
             Destroy(resourceEntity.gameObject);
         }
 
+        public void TransformResource(ResourceEntity sourceEntity, ResourceType targetResource)
+        {
+            TryRequestResource(Resource.Default(targetResource), sourceEntity.transform, out ResourceEntity resourceEntity);
+            DestroyResource(sourceEntity);
+        }
+
         public bool GetResourceOutput(FactoryEntity factory, out ResourceEntity resource)
         {
             resource = null;

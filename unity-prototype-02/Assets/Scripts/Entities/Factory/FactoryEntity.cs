@@ -22,9 +22,9 @@ namespace RenderHeads
         #endregion
 
         #region Public Methods
-        public void Init()
+        public virtual void Init()
         {
-            Factory = new Factory(OnProduce);
+            Factory = new Factory(OnPreProduce, OnProduce);
 
             if (SpawnWorkerOnAwake && RequiresWorker())
             {
@@ -66,6 +66,13 @@ namespace RenderHeads
             }
             else
             {
+                IFactoryBehaviour[] factoryBehaviours = draggable.GetFactoryBehaviours();
+                for (int i = 0; i < factoryBehaviours.Length; i++)
+                {
+                    Factory.AddBehaviour(factoryBehaviours[i]);
+                    Debug.Log("Adding Factory behaviour");
+                }
+
                 Factory.Consume(draggable.DraggedResource);
                 draggable.BeConsumed();
                 Factory.Produce();
@@ -81,14 +88,15 @@ namespace RenderHeads
             }
         }
 
-        public void OnClick()
+        public virtual void OnClick()
         {
+            Debug.Log($"[{this.gameObject.name}] Clicked!");
             TryProduce();
         }
         #endregion
 
         #region Private Methods
-        private void TryProduce()
+        protected void TryProduce()
         {
             if (!HasOutputSlotFilled())
             {
@@ -96,7 +104,12 @@ namespace RenderHeads
             }
         }
 
-        private void OnProduce(Resource resource)
+        protected virtual void OnPreProduce(List<Resource> resources)
+        {
+
+        }
+
+        protected void OnProduce(Resource resource)
         {
             Debug.Log($"[{this.gameObject.name}] produced ({resource.Type})");
 

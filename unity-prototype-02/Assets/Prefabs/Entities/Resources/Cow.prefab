@@ -164,6 +164,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Resource:
     Type: 0
+  spriteRenderer: {fileID: 3495841633426509229}
+  aspectSpriteData:
+  - Sprite: {fileID: 21300000, guid: b4dc6fd541835496e9ee0016a632faf8, type: 3}
+    AspectType: 5
+    Operation: 2
+    Value: 0
 --- !u!135 &4049740275039451343
 SphereCollider:
   m_ObjectHideFlags: 0

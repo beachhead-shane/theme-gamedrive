@@ -20,6 +20,7 @@ namespace RenderHeads
         {
             Init();
             Factory.AddBehaviour(new FactoryBehaviourWheatToFlour());
+            Factory.AddBehaviour(new FactoryBehaviourDeadToFlour());
 
             if (SpawnResourceOnAwake)
             {

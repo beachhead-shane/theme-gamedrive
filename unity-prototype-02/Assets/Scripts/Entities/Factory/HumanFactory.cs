@@ -1,6 +1,7 @@
 //RenderHeads - Jeff Rusch
 using System.Collections;
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
 
 namespace RenderHeads
@@ -12,13 +13,15 @@ namespace RenderHeads
         #endregion
 
         #region Private Properties
-
+        [SerializeField]
+        private HumanEntity humanEntity;
         #endregion
 
         #region Public Methods
         public void Start()
         {
             Init();
+            Factory.AddBehaviour(new FactoryBehaviourPoisonToDead());
             Factory.AddBehaviour(new FactoryBehaviourBurgerToPoop());
             Factory.Consume(this.GetComponent<HumanEntity>().Resource);
 
@@ -26,6 +29,16 @@ namespace RenderHeads
             {
                 ForceResourceSpawn();
             }
+        }
+
+        public override void Init()
+        {
+            Factory = new Factory(OnPreProduce, CheckToDie);
+        }
+
+        public override void OnClick()
+        {
+            Debug.Log($"[{this.gameObject.name}] {humanEntity.Resource.ToString()}");
         }
         #endregion
 
@@ -43,6 +56,38 @@ namespace RenderHeads
             };
             Factory.Consume(resources);
             Factory.Produce();
+        }
+
+        protected override void OnPreProduce(List<Resource> resources)
+        {
+            for (int i = 0; i < resources.Count; i++)
+            {
+                if (resources[i].Aspects.ContainsKey(AspectType.Corruption))
+                {
+                    if (!humanEntity.Resource.Aspects.ContainsKey(AspectType.Corruption))
+                    {
+                        humanEntity.Resource.Aspects.Add(AspectType.Corruption, resources[i].Aspects[AspectType.Corruption]);
+                    }
+                    else
+                    {
+                        humanEntity.Resource.Aspects[AspectType.Corruption] = resources[i].Aspects[AspectType.Corruption];
+                    }
+                }
+            }
+
+            humanEntity.UpdateSprite();
+        }
+
+        private void CheckToDie(Resource resource)
+        {
+            if (resource.Type == ResourceType.DeadHuman)
+            {
+                ResourcePool.Instance.TransformResource(humanEntity, ResourceType.DeadHuman);
+            }
+            else
+            {
+                OnProduce(resource);
+            }
         }
         #endregion
     }
