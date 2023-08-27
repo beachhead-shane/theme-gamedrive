@@ -6,18 +6,17 @@ import "./components/side-bar";
 import "./components/relationships-view";
 import "./components/modal";
 import { store } from "./state";
-import { loadMap, loadSaveForGameSlice } from "./gameReducer";
+import { loadMap } from "./gameReducer";
 import { View } from "./Types/View";
 import { IGameCell } from "./Types/IGameCell";
 import { state } from "lit/decorators.js";
 import { Unsubscribe } from "@reduxjs/toolkit";
-import { loadSaveForTutorialSlice } from "./tutorialReducer";
 class App extends LitElement {
   constructor() {
     super();
   }
   static styles = css`
-    :host {
+    :host {lo
       display: block;
       width: 100%;
       height: 100%;
@@ -73,11 +72,11 @@ class App extends LitElement {
     const ctx = canvas.getContext("2d");
 
     //If board state is set just load it
-    if (localStorage.getItem("board_state") !== null) {
+    /*if (localStorage.getItem("board_state") !== null) {
       store.dispatch(loadSaveForGameSlice());
       store.dispatch(loadSaveForTutorialSlice());
       return;
-    }
+    }*/
 
     const imageMap = new Image();
     imageMap.onload = function () {
