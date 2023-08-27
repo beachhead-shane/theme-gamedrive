@@ -31,3 +31,5 @@ MonoBehaviour:
     ResourceEntity: {fileID: 4924451623305964701, guid: 1aa94c88f0f8f440f947006af332bba5, type: 3}
   - ResourceType: 9
     ResourceEntity: {fileID: -1404849772950893286, guid: 75c297bdaf9e54934b82e4d429725657, type: 3}
+  AcceptedHighlightColor: {r: 0.5019608, g: 1, b: 0.5019608, a: 1}
+  RejectedHighlightColor: {r: 1, g: 0.5019608, b: 0.5019608, a: 1}

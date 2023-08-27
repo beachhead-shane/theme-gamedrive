@@ -18,6 +18,8 @@ namespace RenderHeads
         #region Private Properties
         private bool isDragging = false;
         private Vector3 targetPosition;
+        [SerializeField]
+        private SpriteRenderer spriteRenderer;
         #endregion
 
         #region Public Methods

@@ -31,6 +31,8 @@ namespace RenderHeads
 		}
 
 		public ResourceAsset[] ResourceAssets;
+		public Color AcceptedHighlightColor;
+        public Color RejectedHighlightColor;
         #endregion
 
         #region Private Properties

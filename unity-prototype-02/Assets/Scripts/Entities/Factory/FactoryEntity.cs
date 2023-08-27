@@ -17,7 +17,8 @@ namespace RenderHeads
         #endregion
 
         #region Private Properties
-
+        [SerializeField]
+        private SpriteRenderer spriteRenderer;
         #endregion
 
         #region Public Methods
@@ -39,18 +40,23 @@ namespace RenderHeads
             {
                 if (draggable is HumanEntity)
                 {
+                    SetSpriteHilightColor(DataKeeper.Instance.AcceptedHighlightColor);
                     return true;
                 }
             }
             else if (!RequiresWorker() && !HasOutputSlotFilled() && Factory.CanAcceptResource(draggable.DraggedResource))
             {
+                SetSpriteHilightColor(DataKeeper.Instance.AcceptedHighlightColor);
                 return true;
             }
+            SetSpriteHilightColor(DataKeeper.Instance.RejectedHighlightColor);
             return false;
         }
 
         public void DropDraggable(IDraggableResource draggable)
         {
+            SetSpriteHilightColor(Color.white);
+
             if (RequiresWorker())
             {
                 if (draggable is HumanEntity)
@@ -69,6 +75,10 @@ namespace RenderHeads
         public void IsHoveredOver(bool highlighted)
         {
             Debug.Log($"[{this.gameObject.name}] is highlighted ({highlighted})");
+            if (!highlighted)
+            {
+                SetSpriteHilightColor(Color.white);
+            }
         }
 
         public void OnClick()
@@ -126,6 +136,11 @@ namespace RenderHeads
         }
 
         protected abstract void ForceResourceSpawn();
+
+        protected void SetSpriteHilightColor(Color color)
+        {
+            spriteRenderer.color = color;
+        }
         #endregion
     }
 }

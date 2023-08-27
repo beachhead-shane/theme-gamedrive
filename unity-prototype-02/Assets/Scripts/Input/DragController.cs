@@ -8,7 +8,7 @@ namespace RenderHeads
     public class DragController : MonoBehaviour
     {
         #region Public Properties
-       
+
 
         #endregion
 
@@ -32,6 +32,7 @@ namespace RenderHeads
         }
         [SerializeField]
         private PointerState pointerState = PointerState.None;
+        private IDropTarget dropTarget;
         #endregion
 
         #region Public Methods
@@ -142,6 +143,32 @@ namespace RenderHeads
             pos = new Vector3(pos.x, pos.y, draggingZ);
             activeDraggable.Drag(pos);
             lastDragPosition = pos;
+
+
+            if (GetInteractable(out IDropTarget foundDropTarget))
+            {
+                if (dropTarget == null || dropTarget != foundDropTarget)
+                {
+                    if (dropTarget != null)
+                    {
+                        dropTarget.IsHoveredOver(false);
+                    }
+                    dropTarget = foundDropTarget;
+                    dropTarget.IsHoveredOver(true);
+                    if (dropTarget.CanAcceptDraggable(activeDraggable))
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                if (dropTarget != null)
+                {
+                    dropTarget.IsHoveredOver(false);
+                    dropTarget = null;
+                }
+            }
         }
 
         public void EndDrag()
@@ -156,13 +183,15 @@ namespace RenderHeads
                     Debug.Log($"Can accept ({dropTarget})!");
                     dropTarget.DropDraggable(activeDraggable);
 
-                } else
+                }
+                else
                 {
                     Debug.Log($"Can not accept ({dropTarget})!");
                     activeDraggable.MoveTo(activeDraggableStartPosition);
                 }
 
-            } else
+            }
+            else
             {
 
                 activeDraggable.MoveTo(activeDraggableStartPosition);
@@ -170,6 +199,12 @@ namespace RenderHeads
 
             activeDraggable.EndDrag();
             activeDraggable = null;
+
+            if (dropTarget != null)
+            {
+                dropTarget.IsHoveredOver(false);
+                dropTarget = null;
+            }
         }
         #endregion
 
