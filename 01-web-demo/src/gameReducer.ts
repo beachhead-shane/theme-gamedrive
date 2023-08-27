@@ -121,11 +121,11 @@ const GenerateInitialState: () => gameStateSlice = () => {
     view: View.None,
     features: {},
     activeMissions: [],
-    characters: [Custodian(), LysandraKorr(), Tracker()],
+    characters: [LysandraKorr(), Custodian(), Tracker()],
     bankBalance: 100,
     modal: {
       message:
-        "This prototype is crafted to showcase the essence of our moment-to-moment gameplay and foundational story elements. Our goal is to present a simulation and role-playing game game that features a user-friendly interface, making it accessible for newcomers. At the same time, we offer an engaging and novel subject matter designed to captivate seasoned fans of the genre.",
+        "This prototype is crafted to showcase the essence of our moment-to-moment gameplay and foundational story elements. Our goal is to present a story rich adventure game that features a user-friendly interface, making it accessible for newcomers. At the same time, we offer an engaging and novel subject matter designed to captivate seasoned fans of the genre.",
       buttonMessage: "Click here to start",
       visible: true,
     },
