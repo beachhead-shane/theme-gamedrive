@@ -14,7 +14,22 @@ namespace RenderHeads
 
         public bool CanManufacture(List<Resource> listOfInputs)
         {
-            return listOfInputs[0].Type == ResourceType.Human && listOfInputs[0].HasAspect(AspectType.Corruption) && listOfInputs[0].Aspects[AspectType.Corruption] > 100; ;
+            bool hasCorruptHuman = false;
+            int humanCount = 0;
+
+            for (int i = 0; i < listOfInputs.Count; i++)
+            {
+                if (listOfInputs[i].Type == ResourceType.Human)
+                {
+                    humanCount++;
+                    if (listOfInputs[0].HasAspect(AspectType.Corruption) && listOfInputs[0].Aspects[AspectType.Corruption] > 100)
+                    {
+                        hasCorruptHuman = true;
+                    }
+                }
+            }
+
+            return hasCorruptHuman && humanCount > 1;
         }
         protected override Resource Manufacture(List<Resource> selectedInputs)
         {
